@@ -2,29 +2,58 @@
   <div class="home">
    
     <section class="section">
-      <div class="container">
+      <div class="container has-text-centered">
         <h1 class="title">
             Simple Quiz
         </h1>
         <p class="subtitle">
           Take and make your own quizzes!
         </p>
+        <router-link class="button is-primary" to="/quizzes">Find A quiz</router-link>
+        <router-link class="button is-primary" to="/login">Login</router-link>
+        <router-link class="button is-primary" to="/login">Create Account</router-link>
+        <div class="content category-division">
+          <h1 class="subtitle"> Popular </h1>
+          <media-card>
+            <p slot="title"> TODO </p>
+            <p slot="description"> TODODODODODODODD </p>
+          </media-card>
+          <media-card>
+            <p slot="title"> TODO </p>
+            <p slot="description"> TODODODODODODODD </p>
+          </media-card>
+        </div>
+        <div class="content category-division">
+          <h1 class="subtitle"> New </h1>
+          <media-card>
+            <p slot="title"> TODO </p>
+            <p slot="description"> TODODODODODODODD </p>
+          </media-card>
+          <media-card>
+            <p slot="title"> TODO </p>
+            <p slot="description"> TODODODODODODODD </p>
+          </media-card>
+        </div>
       </div>
     </section>
-    <router-link class="button is-primary" to="/quizzes">Find A quiz</router-link>
-    <router-link class="button is-primary" to="/login">Login</router-link>
-    <router-link class="button is-primary" to="/login">Create Account</router-link>
     
   </div>
 </template>
 
 <script>
 
+import MediaCard from '@/components/MediaCard'
+
 export default {
-  name: 'Home'
+  name: 'Home',
+  components: {
+    'media-card': MediaCard
+  }
 }
 </script>
 
 <style scoped>
-
+  .category-division{
+    margin-top: 20px;
+  }
 </style>
