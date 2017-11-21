@@ -109,7 +109,7 @@ export default {
    addQuestion: function(data) {
      var newQuestion = {
        title: data.question,
-       possibleAnswers: data.answers.split('\n'),
+       possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
        correctAnswer: data.answers.split('\n')[0]
      }
      this.questions.push(newQuestion)
