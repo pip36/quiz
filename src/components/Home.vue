@@ -10,8 +10,6 @@
           Take and make your own quizzes!
         </p>
         <router-link class="button is-primary" to="/quizzes">Find A quiz</router-link>
-        <router-link class="button is-primary" to="/login">Login</router-link>
-        <router-link class="button is-primary" to="/login">Create Account</router-link>
         <div class="content category-division">
           <h1 class="subtitle"> Popular </h1>
           <media-card>

@@ -4,8 +4,18 @@ import Home from '@/components/Home'
 import Quizzes from '@/components/Quizzes'
 import Quiz from '@/components/Quiz'
 import QuizMaker from '@/components/QuizMaker'
+import SignUp from '@/components/SignUp'
+import SignIn from '@/components/SignIn'
+import store from '@/vuex/store'
 
 Vue.use(Router)
+
+var authenticated = function () {
+  if (store.state.currentUser.uid) {
+    return true
+  }
+  return false
+}
 
 export default new Router({
   mode: 'history',
@@ -28,7 +38,38 @@ export default new Router({
     {
       path: '/quizmaker',
       name: 'QuizMaker',
-      component: QuizMaker
+      component: QuizMaker,
+      beforeEnter: (to, from, next) => {
+        if (!authenticated()) {
+          next(from)
+        } else {
+          next()
+        }
+      }
+    },
+    {
+      path: '/signup',
+      name: 'SignUp',
+      component: SignUp,
+      beforeEnter: (to, from, next) => {
+        if (authenticated()) {
+          next(from)
+        } else {
+          next()
+        }
+      }
+    },
+    {
+      path: '/signin',
+      name: 'SignIn',
+      component: SignIn,
+      beforeEnter: (to, from, next) => {
+        if (authenticated()) {
+          next(from)
+        } else {
+          next()
+        }
+      }
     }
   ]
 })
