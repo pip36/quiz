@@ -30,15 +30,14 @@ export default {
     this.getQuizzes()
   },
   methods: {
-    getQuizzes: function() {
 
+    getQuizzes: function() {
       this.$store.state.db.collection("quizzes").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           this.quizzes.push({
-              id: doc.id, 
-              data: doc.data() 
+            id: doc.id, 
+            data: doc.data() 
           })
-    
         })
       })
 
@@ -47,7 +46,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 

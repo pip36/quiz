@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+
    <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <router-link class="navbar-item" to="/">
@@ -12,8 +12,16 @@
         <span></span>
       </button>
     </div>
+
+    <div class="navbar-menu">
+      <div class="navbar-end">
+        <router-link class="navbar-item" to="/quizmaker">
+          <strong>Make a Quiz</strong>
+        </router-link>
+      </div>
+    </div>     
   </nav>
-  </div>
+
 </template>
 
 <script>
@@ -24,5 +32,5 @@ export default {
 
 
 <style scoped>
-
+  
 </style>

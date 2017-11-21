@@ -3,13 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
+import VeeValidate from 'vee-validate'
 import store from '@/vuex/store'
-import bulma from 'bulma'
-
+import Bulma from 'bulma'
 
 Vue.config.productionTip = false
 
+Vue.use(VeeValidate, Bulma)
 
 /* eslint-disable no-new */
 new Vue({

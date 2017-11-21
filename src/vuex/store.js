@@ -2,12 +2,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import firebase from 'firebase'
-require("firebase/firestore");
 import Config from '@/config/config'
+require('firebase/firestore')
 
 Vue.use(Vuex)
 
-firebase.initializeApp(Config.firebase);
+firebase.initializeApp(Config.firebase)
 
 export default new Vuex.Store({
   plugins: [
@@ -26,4 +26,3 @@ export default new Vuex.Store({
     }
   }
 })
-
