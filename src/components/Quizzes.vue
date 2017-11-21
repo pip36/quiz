@@ -5,18 +5,23 @@
         <h1 class="title">
           Quizzes
         </h1>
+        <ul>
+          <li v-for="quiz in quizzes">    
+            <media-card> 
+              <router-link slot="title" :to="{ name: 'Quiz', params: { id: quiz.id } }">{{ quiz.data.title }} </router-link>
+              <p slot="description"> {{quiz.data.description}} </p>
+            </media-card>
+          </li>
+        </ul>
       </div>
      </section>
-  
-    <ul>
-        <li v-for="quiz in quizzes">
-            <router-link :to="{ name: 'Quiz', params: { id: quiz.id } }">{{ quiz.data.title }}</router-link>  
-        </li>
-    </ul>
+     
   </div>
 </template>
 
 <script>
+
+import MediaCard from '@/components/MediaCard'
 
 export default {
   name: 'Quizzes',
@@ -24,6 +29,9 @@ export default {
     return {
       quizzes: []
     }
+  },
+  components: {
+    'media-card': MediaCard
   },
  
   mounted() {
