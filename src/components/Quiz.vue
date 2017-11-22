@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     shuffledAnswers: function() {
-      return this.quiz.questions[this.currentQuestion].possibleAnswers.sort(() => Math.random() * 2 - 1);
+      return this.shuffleArray(this.quiz.questions[this.currentQuestion].possibleAnswers)
     },
     scorePercentage: function(){
       return Math.round((this.correctAnswers/this.quiz.questions.length)*100)
@@ -83,6 +83,13 @@ export default {
     this.loadQuiz()
   },
   methods: {
+    shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array
+    },
 
     setQuiz(){
       var id = this.$route.params.id
