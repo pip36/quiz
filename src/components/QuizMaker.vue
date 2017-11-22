@@ -84,7 +84,16 @@
               </div>
             </div>
                        
-            <button @click="createQuiz" class="button is-primary is-medium"> Create Quiz! </button>
+            <button 
+              :disabled="errors.any()" 
+              v-show="!isUpdating" 
+              @click="createQuiz" 
+              class="button is-primary is-medium"> Create Quiz! </button>
+            <button 
+              :disabled="errors.any()" 
+              v-show="isUpdating" 
+              @click="updateQuiz" 
+              class="button is-primary is-medium"> Update Quiz! </button>
           </aside>
 
           <question-modal 
@@ -135,8 +144,14 @@ export default {
       questionCreatorActive: false,
       questionIsPresent: false,
       thumbnailImage: 'https://bulma.io/images/placeholders/64x64.png',
-      file: {}
+      file: {},
+      isUpdating: false
     }  
+  },
+  mounted() {
+    if(this.$route.params.quiz){
+      this.loadQuizToForm(this.$route.params.quiz)
+    }
   },
   methods: {
 
@@ -157,8 +172,28 @@ export default {
       this.questions.splice(index2, 1, c)
     },
 
+    updateQuiz: function() {
+      var quizRef = this.$store.state.db.collection("quizzes").doc(this.$route.params.quiz.id);
+      if(this.file.name != this.$route.params.quiz.data.image){ this.uploadFile() }
+
+      return quizRef.update({
+          image: this.file.name,
+          title: this.quizTitle,
+          description: this.description,
+          questions: this.questions
+      })
+      .then(function() {
+          console.log("Document successfully updated!");
+      })
+      .catch(function(error) {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+      });
+    },
+
     createQuiz: function() {  
       if(this.errors.items.length === 0){
+
         if(this.file.name){ this.uploadFile() }
 
         var uid = this.$store.state.currentUser.uid
@@ -204,6 +239,25 @@ export default {
       };
       reader.readAsDataURL(files[0]);
       this.file = files[0]
+    },
+
+    loadQuizToForm: function(quiz) {
+      var uid = this.$store.state.currentUser.uid
+      var storageRef = this.$store.state.storage.ref(uid + '/' + quiz.data.image)
+
+      this.isUpdating = true
+      this.quizTitle = quiz.data.title
+      this.description = quiz.data.description
+      this.questions = quiz.data.questions
+      this.file.name = quiz.data.image
+
+      storageRef.getDownloadURL().then((url) => {
+        // Or inserted into an <img> element:
+        this.thumbnailImage = url
+      }).catch(function(error) {
+        // Handle any errors
+        console.log("error getting image")
+      })
     }
   } 
 }

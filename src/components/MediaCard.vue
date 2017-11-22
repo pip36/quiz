@@ -23,8 +23,8 @@
           </div>
           <div class="media-right">
             <router-link
-              v-if="quizdata && quizdata.owner === currentUserId" 
-              to="/profile">
+              v-if="quiz && quiz.data.owner === currentUserId" 
+              :to="{name: 'QuizMaker', params: { quiz: quiz }}">
               edit
             </router-link>
           </div>
@@ -40,7 +40,7 @@
 
 export default {
   name: 'MediaCard',
-  props: ['quizdata'],
+  props: ['quiz'],
   data () {
     return {
       imageURL: "https://bulma.io/images/placeholders/64x64.png"
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     imagePath: function() {
-      return this.quizdata.owner+'/'+this.quizdata.image
+      return this.quiz.data.owner+'/'+this.quiz.data.image
     },
     currentUserId: function(){
       return this.$store.state.currentUser.uid
@@ -59,15 +59,14 @@ export default {
   },
   methods: {
     test: function(){
-      console.log(this.quizdata)
+      console.log(this.quiz.data)
       console.log(this.imagePath)
     },
     loadImage: function(path){
       var pathRef = this.$store.state.storage.ref(path)
       pathRef.getDownloadURL().then((url) => {
         // `url` is the download URL 
-       
-
+    
         // Or inserted into an <img> element:
         this.imageURL = url
       }).catch(function(error) {

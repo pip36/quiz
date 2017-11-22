@@ -7,7 +7,7 @@
         </h1>
         <ul>
           <li v-for="quiz in quizzes">    
-            <media-card :quizdata="quiz.data"> 
+            <media-card :quiz="quiz"> 
               <router-link slot="title" :to="{ name: 'Quiz', params: { id: quiz.id } }">{{ quiz.data.title }} </router-link>
               <p slot="description"> {{quiz.data.description}} </p>
             </media-card>

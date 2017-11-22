@@ -9,8 +9,8 @@
       </div>
       <footer class="card-footer">
         <a @click="swap" class="card-footer-item">MoveUp</a>
-        <a href="#" class="card-footer-item">Edit</a>
-        <a href="#" class="card-footer-item">Delete</a>
+        <a href="#" class="card-footer-item">Edit(todo)</a>
+        <a href="#" class="card-footer-item">Delete(todo)</a>
       </footer>
     </div>
     
