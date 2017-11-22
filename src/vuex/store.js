@@ -19,6 +19,7 @@ const store = new Vuex.Store({
   state: {
     activeQuiz: null,
     db: firebase.firestore(),
+    storage: firebase.storage(),
     currentUser: null
   },
   mutations: {

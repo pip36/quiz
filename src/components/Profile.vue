@@ -1,10 +1,9 @@
 <template>
-  <div class="quizzes">
-     <section class="section">
-      <div class="container">
-        <h1 class="title">
-          Quizzes
-        </h1>
+
+  <div class="profile">
+    <section class="section">
+      <div class="container"> 
+        <h1 class='title'> Profile </h1>
         <ul>
           <li v-for="quiz in quizzes">    
             <media-card :quizdata="quiz.data"> 
@@ -14,9 +13,9 @@
           </li>
         </ul>
       </div>
-     </section>
-     
+    </section>
   </div>
+
 </template>
 
 <script>
@@ -24,23 +23,27 @@
 import MediaCard from '@/components/MediaCard'
 
 export default {
-  name: 'Quizzes',
+  name: 'Profile',
   data () {
     return {
       quizzes: []
     }
   },
+
   components: {
     'media-card': MediaCard
   },
- 
+
   created() {
     this.getQuizzes()
   },
-  methods: {
 
+  methods: {
     getQuizzes: function() {
-      this.$store.state.db.collection("quizzes").get().then((querySnapshot) => {
+      var uid = this.$store.state.currentUser.uid
+      //var ref = this.$store.state.db.collection('users').doc(uid).collection('quizzes')
+      var ref = this.$store.state.db.collection('quizzes').where('owner', '==', uid)
+      ref.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           this.quizzes.push({
             id: doc.id, 
@@ -48,13 +51,12 @@ export default {
           })
         })
       })
-
     }
-    
   }
 }
 </script>
 
-<style scoped>
 
+<style scoped>
+  
 </style>

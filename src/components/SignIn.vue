@@ -43,7 +43,7 @@
           <p :v-show="errors.has('password')" class="help is-danger">{{errors.first('password')}}</p>
         </div>
 
-        <button :disabled="errors.any()" class="button is-primary is-large" @click="signIn"> Sign In </button>
+        <button :disabled="errors.any()" class="button is-primary is-large" type="submit" @click="signIn"> Sign In </button>
   
       </div>
     </section>

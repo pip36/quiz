@@ -1,11 +1,17 @@
 <template>
   <div class="quizmaker">
-      
     <section class="section">
       <h1 class="title has-text-centered"> Create your quiz </h1>
         <div class="container columns">
           <aside class="column is-3">
           
+            <input                
+              v-validate="{required: true}"
+              v-validate.initial="'required'" 
+              type="hidden" 
+              name="user"
+              :value="$store.state.currentUser.uid">
+
             <div class="field">
               <label class="label">Quiz Title</label>
               <div class="control">
@@ -38,6 +44,32 @@
             </div>
 
             <div class="field">
+              <label class="label">Image Thumbnail</label>
+              <img :src='thumbnailImage' class="image is-64x64"/>
+              <div class="control">
+                <div :class="{'file':true, 'has-name':true, 'is-danger':errors.has('image')}">
+                  <label class="file-label">
+                    <input 
+                      v-validate="{image: true, size: 1000}"
+                      @change="addFile" 
+                      class="file-input" 
+                      type="file" 
+                      name="image">
+                    <span class="file-cta">
+                      <span class="file-icon">
+                        <i class="fa fa-upload"></i>
+                      </span>
+                      <span class="file-label">
+                        Choose a file…
+                      </span>
+                    </span>
+                  </label>
+                </div>
+                <p class="help is-danger" v-show="errors.has('image')">{{ errors.first('image') }} </p>
+              </div>
+            </div>
+
+            <div class="field">
               <label class="label">Questions</label>
               <ul>
                 <li v-for="(question, index) in questions">
@@ -63,6 +95,7 @@
 
          <main class="column is-9 has-text-centered"> 
            <media-card>
+             <img v-if="!errors.has('image') && thumbnailImage" slot="image" :src='thumbnailImage' class='image is-64x64'/>
              <p slot="title"> {{quizTitle}} </p>
              <p slot="description"> {{description}} </p>
            </media-card>
@@ -101,31 +134,40 @@ export default {
       description: '',
       questions: [],
       questionCreatorActive: false,
-      questionIsPresent: false
+      questionIsPresent: false,
+      thumbnailImage: {},
+      file: {}
     }  
   },
   methods: {
 
-   addQuestion: function(data) {
-     var newQuestion = {
-       title: data.question,
-       possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
-       correctAnswer: data.answers.split('\n')[0]
-     }
-     this.questions.push(newQuestion)
-     this.questionCreatorActive = false
-   },
+    addQuestion: function(data) {
+      var newQuestion = {
+        title: data.question,
+        possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
+        correctAnswer: data.answers.split('\n')[0]
+      }
+      this.questions.push(newQuestion)
+      this.questionCreatorActive = false
+    },
 
-   swapCard: function(index1, index2) {
-     if(index1 <= 0){ return false }
-     var c = this.questions[index1]
-     this.questions.splice(index1, 1, this.questions[index2])
-     this.questions.splice(index2, 1, c)
-   },
+    swapCard: function(index1, index2) {
+      if(index1 <= 0){ return false }
+      var c = this.questions[index1]
+      this.questions.splice(index1, 1, this.questions[index2])
+      this.questions.splice(index2, 1, c)
+    },
 
-   createQuiz: function() {
-     if(this.errors.items.length === 0){
+    createQuiz: function() {  
+      if(this.errors.items.length === 0){
+        if(this.file.name){ this.uploadFile() }
+
+        var uid = this.$store.state.currentUser.uid
+
+        //Add Quiz to quiz collection
         this.$store.state.db.collection("quizzes").add({
+          owner: uid,
+          image: this.file.name,
           title: this.quizTitle,
           description: this.description,
           questions: this.questions
@@ -136,10 +178,33 @@ export default {
         .catch(function(error) {
           console.error("Error writing document: ", error);
         });
-      } 
-      else{
-        console.log("validation errors present")
-      } 
+      }
+      
+    },
+
+    uploadFile: function() {
+      var uid = this.$store.state.currentUser.uid
+      var storageRef = this.$store.state.storage.ref()
+      var imagesRef = storageRef.child(uid+'/'+this.file.name);
+      var file = this.file 
+      imagesRef.put(file).then(function(snapshot) {
+        console.log('Uploaded a file!')
+      })
+    },
+
+    addFile: function(event) {
+      var files = event.target.files || event.dataTransfer.files;
+      if (!files.length){ return }
+      console.log(files[0])
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = (event) => {
+        vm.thumbnailImage = event.target.result;
+      };
+      reader.readAsDataURL(files[0]);
+      this.file = files[0]
     }
   } 
 }

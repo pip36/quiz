@@ -24,6 +24,9 @@
         <router-link v-show="this.$store.state.currentUser.uid" class="navbar-item" to="/quizmaker">
           <strong>Make a Quiz</strong>
         </router-link>
+        <router-link v-show="this.$store.state.currentUser.uid" class="navbar-item" to="/profile">
+          <strong>Profile</strong>
+        </router-link>
         <a v-show="this.$store.state.currentUser.uid" @click="signOut" class="navbar-item">
           <strong>logout</strong>
         </a>

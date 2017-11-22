@@ -7,6 +7,7 @@ import QuizMaker from '@/components/QuizMaker'
 import SignUp from '@/components/SignUp'
 import SignIn from '@/components/SignIn'
 import store from '@/vuex/store'
+import Profile from '@/components/Profile'
 
 Vue.use(Router)
 
@@ -65,6 +66,18 @@ export default new Router({
       component: SignIn,
       beforeEnter: (to, from, next) => {
         if (authenticated()) {
+          next(from)
+        } else {
+          next()
+        }
+      }
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
+      beforeEnter: (to, from, next) => {
+        if (!authenticated()) {
           next(from)
         } else {
           next()
