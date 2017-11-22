@@ -23,7 +23,7 @@
           </div>
           <div class="media-right">
             <router-link
-              v-if="quizdata.owner === currentUserId" 
+              v-if="quizdata && quizdata.owner === currentUserId" 
               to="/profile">
               edit
             </router-link>

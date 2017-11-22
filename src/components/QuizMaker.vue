@@ -110,8 +110,7 @@
          </main>
        </div>
     </section>
- 
-    
+  
   </div>
 </template>
 
@@ -135,7 +134,7 @@ export default {
       questions: [],
       questionCreatorActive: false,
       questionIsPresent: false,
-      thumbnailImage: {},
+      thumbnailImage: 'https://bulma.io/images/placeholders/64x64.png',
       file: {}
     }  
   },
