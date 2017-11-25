@@ -159,7 +159,8 @@ export default {
       var newQuestion = {
         title: data.question,
         possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
-        correctAnswer: data.answers.split('\n')[0]
+        correctAnswer: data.answers.split('\n')[0],
+        media: data.media
       }
       this.questions.push(newQuestion)
       this.questionCreatorActive = false
@@ -210,6 +211,7 @@ export default {
         .then(() => {
           console.log("Document successfully written!");
           if(this.file.name){ this.uploadFile() }
+          
         })
         .catch(function(error) {
           console.error("Error writing document: ", error);

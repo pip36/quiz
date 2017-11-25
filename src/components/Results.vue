@@ -2,7 +2,7 @@
 
   <div class="container has-text-centered">
     <h1 class="title"> Done! </h1>
-    <p> You got{{correctAnswers}}/{{questions.length}} correct </p>
+    <p> You got {{correctAnswers}}/{{questions.length}} correct </p>
     <h3 class="subtitle"> That's {{scorePercentage}}% </h3>
   </div>
 

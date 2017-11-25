@@ -21,13 +21,13 @@
               v-if="answered && currentQuestion < quiz.questions.length-1" 
               class="button is-primary is-large" 
               @click="loadNextQuestion()">
-              Next Question
+                Next Question
             </button>
             <button 
               v-if="answered && currentQuestion >= quiz.questions.length-1" 
               class="button is-primary is-large" 
               @click="showResults()">
-              Show Results
+                Show Results
             </button>
           </div>
         </template>

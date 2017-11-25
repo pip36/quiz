@@ -24,7 +24,7 @@
               </div>
               <p class="help is-danger" v-show="errors.has('question')">You need to enter a question!</p> 
             </div>
-<!--
+
             <div class="field">
               <label class="label">Question Media</label>
               <p class="help"> add media to question </p>
@@ -32,8 +32,7 @@
                 <div :class="{'file':true, 'has-name':true}">
                   <label class="file-label">
                     <input 
-                      v-validate="{}" 
-                      @change="addFile"
+                      @change="addMedia"
                       class="file-input" 
                       type="file" 
                       name="file">
@@ -47,10 +46,11 @@
                     </span>
                   </label>
                 </div>
-      
+                <p> {{ media.name }} </p>
+                <p> {{ media.type }} </p>
               </div>
             </div>
--->
+
 
             <div class="field">
               <label class="label">Answers</label>  
@@ -89,28 +89,17 @@ export default {
     return{
       questionData: {
         question: '',
-        answers: ''
-      }
+        answers: '',
+        media: null
+      },
+      media: {}
     }
   },
   props: ['active'],
   methods: {
-
-    closeModal: function(){
-      this.$emit('close')
-    },
-
-    addQuestion: function(){
-      if(this.errors.items.length === 0){
-        this.$emit('sendQuestionData', this.questionData)
-      }           
-    }
-  },
-
-  addFile: function(event) {
+    addMedia (event) {
       var files = event.target.files || event.dataTransfer.files;
       if (!files.length){ return }
-      console.log(files[0])
       var image = new Image();
       var reader = new FileReader();
       var vm = this;
@@ -119,8 +108,21 @@ export default {
         vm.thumbnailImage = event.target.result;
       };
       reader.readAsDataURL(files[0]);
-      this.file = files[0]
+      this.media = files[0]
+      this.questionData.media = this.media.name
+      console.log(this.media)
+    },
+
+    closeModal () {
+      this.$emit('close')
+    },
+
+    addQuestion () {
+      if(this.errors.items.length === 0){
+        this.$emit('sendQuestionData', this.questionData)
+      }           
     }
+  }
 }
 </script>
 
