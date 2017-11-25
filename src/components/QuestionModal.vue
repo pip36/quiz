@@ -11,17 +11,6 @@
         <section class="modal-card-body">
           <form>
             <div class="field">
-              <label class="label">Quiz Type</label>
-              <div class="control">
-                <div class="select">
-                  <select>
-                    <option> multiple choice </option>
-                  </select>
-                </div>
-              </div>
-            </div>  
-
-            <div class="field">
               <label class="label">Question</label>
               <div class="control">
                 <input 
@@ -35,6 +24,33 @@
               </div>
               <p class="help is-danger" v-show="errors.has('question')">You need to enter a question!</p> 
             </div>
+<!--
+            <div class="field">
+              <label class="label">Question Media</label>
+              <p class="help"> add media to question </p>
+              <div class="control">
+                <div :class="{'file':true, 'has-name':true}">
+                  <label class="file-label">
+                    <input 
+                      v-validate="{}" 
+                      @change="addFile"
+                      class="file-input" 
+                      type="file" 
+                      name="file">
+                    <span class="file-cta">
+                      <span class="file-icon">
+                        <i class="fa fa-upload"></i>
+                      </span>
+                      <span class="file-label">
+                        Choose a file…
+                      </span>
+                    </span>
+                  </label>
+                </div>
+      
+              </div>
+            </div>
+-->
 
             <div class="field">
               <label class="label">Answers</label>  
@@ -79,16 +95,32 @@ export default {
   },
   props: ['active'],
   methods: {
+
     closeModal: function(){
       this.$emit('close')
     },
+
     addQuestion: function(){
       if(this.errors.items.length === 0){
         this.$emit('sendQuestionData', this.questionData)
-      }   
-          console.log("ggg")        
+      }           
     }
-  }
+  },
+
+  addFile: function(event) {
+      var files = event.target.files || event.dataTransfer.files;
+      if (!files.length){ return }
+      console.log(files[0])
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = (event) => {
+        vm.thumbnailImage = event.target.result;
+      };
+      reader.readAsDataURL(files[0]);
+      this.file = files[0]
+    }
 }
 </script>
 

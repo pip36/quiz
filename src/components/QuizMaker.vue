@@ -143,7 +143,7 @@ export default {
       questions: [],
       questionCreatorActive: false,
       questionIsPresent: false,
-      thumbnailImage: 'https://bulma.io/images/placeholders/64x64.png',
+      thumbnailImage: '/static/question.png',
       file: {},
       isUpdating: false
     }  
@@ -194,20 +194,22 @@ export default {
     createQuiz: function() {  
       if(this.errors.items.length === 0){
 
-        if(this.file.name){ this.uploadFile() }
-
         var uid = this.$store.state.currentUser.uid
-
+        var filename = this.thumbnailImage
+        if(this.file.name){
+          filename = this.file.name
+        }
         //Add Quiz to quiz collection
         this.$store.state.db.collection("quizzes").add({
           owner: uid,
-          image: this.file.name,
+          image: filename,
           title: this.quizTitle,
           description: this.description,
           questions: this.questions
         })
-        .then(function() {
+        .then(() => {
           console.log("Document successfully written!");
+          if(this.file.name){ this.uploadFile() }
         })
         .catch(function(error) {
           console.error("Error writing document: ", error);

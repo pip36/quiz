@@ -7,12 +7,11 @@
           <div class="media-left">
             <figure class="image is-64x64">
               <slot name="image">
-                <img 
-                :src="imageURL" 
-                alt="https://bulma.io/images/placeholders/64x64.png">  
+                <img :src="imageURL">  
               </slot>        
             </figure>
           </div>
+
           <div class="media-content">
             <p class="title is-4">
               <slot name="title"></slot>
@@ -21,14 +20,14 @@
               <slot name="description"></slot>
             </p>
           </div>
+
           <div class="media-right">
             <router-link
               v-if="quiz && quiz.data.owner === currentUserId" 
               :to="{name: 'QuizMaker', params: { quiz: quiz }}">
               edit
             </router-link>
-          </div>
-          
+          </div>        
         </div>
       </div>
     </div>
@@ -43,11 +42,14 @@ export default {
   props: ['quiz'],
   data () {
     return {
-      imageURL: "https://bulma.io/images/placeholders/64x64.png"
+      imageURL: "/static/question.png"
     }
   },
   mounted () {
-    this.loadImage(this.imagePath)
+    if(this.quiz && this.quiz.data.image !== '/static/question.png'){
+      this.loadImage(this.imagePath)
+    }
+    
   },
   computed: {
     imagePath: function() {
@@ -58,19 +60,12 @@ export default {
     }
   },
   methods: {
-    test: function(){
-      console.log(this.quiz.data)
-      console.log(this.imagePath)
-    },
     loadImage: function(path){
       var pathRef = this.$store.state.storage.ref(path)
       pathRef.getDownloadURL().then((url) => {
-        // `url` is the download URL 
-    
-        // Or inserted into an <img> element:
         this.imageURL = url
       }).catch(function(error) {
-        // Handle any errors
+        //TODO Error Handling
         console.log(error.message)
       });
     }

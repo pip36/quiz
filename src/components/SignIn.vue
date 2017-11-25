@@ -3,7 +3,7 @@
    
     <section class="section">
       <div class="container">
-        <h1 class="title"> Sign In </h1>
+        <h1 class="title"> Log In </h1>
         <div class="field">
           <label class="label">Email</label>
           <div class="control has-icons-left has-icons-right">
@@ -43,7 +43,7 @@
           <p :v-show="errors.has('password')" class="help is-danger">{{errors.first('password')}}</p>
         </div>
 
-        <button :disabled="errors.any()" class="button is-primary is-large" type="submit" @click="signIn"> Sign In </button>
+        <button :disabled="errors.any()" class="button is-primary is-large" type="submit" @click="signIn"> Log In </button>
   
       </div>
     </section>
