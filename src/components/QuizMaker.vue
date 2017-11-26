@@ -70,6 +70,21 @@
             </div>
 
             <div class="field">
+              <label class="label">Category</label>
+              <div class="control">
+                <div class="select">
+                  <select v-model="category" name="category">
+                    <option>Nature</option>
+                    <option>Sport</option>
+                    <option>Politics</option>
+                    <option>Just for fun</option>
+                    <option>Music</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
               <label class="label">Questions</label>
               <ul>
                 <li v-for="(question, index) in questions">
@@ -106,6 +121,7 @@
            <media-card>
              <img v-if="!errors.has('image') && thumbnailImage" slot="image" :src='thumbnailImage' class='image is-64x64'/>
              <p slot="title"> {{quizTitle}} </p>
+             <p slot="category"> {{category}} </p>
              <p slot="description"> {{description}} </p>
            </media-card>
            
@@ -115,7 +131,13 @@
                   {{ question.title }} 
                 </question-card>             
               </li>
-            </ul>           
+            </ul> 
+
+            <ul>
+              <li v-for="file in questionFiles">
+                {{ file.name }}            
+              </li>
+            </ul>            
          </main>
        </div>
     </section>
@@ -128,6 +150,7 @@
 import QuestionModal from '@/components/QuestionModal'
 import MediaCard from '@/components/MediaCard'
 import QuestionCard from '@/components/QuestionCard'
+import Storage from '@/helpers/firestoreHelper'
 
 export default {
   name: 'Home',
@@ -140,7 +163,9 @@ export default {
     return {
       quizTitle: '',
       description: '',
+      category: '',
       questions: [],
+      questionFiles: [],
       questionCreatorActive: false,
       questionIsPresent: false,
       thumbnailImage: '/static/question.png',
@@ -156,14 +181,19 @@ export default {
   methods: {
 
     addQuestion: function(data) {
+     
+      console.log(data)
+     
       var newQuestion = {
         title: data.question,
         possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
         correctAnswer: data.answers.split('\n')[0],
-        media: data.media
+        media: data.media.name,
       }
       this.questions.push(newQuestion)
+      this.questionFiles.push(data.media)
       this.questionCreatorActive = false
+      
     },
 
     swapCard: function(index1, index2) {
@@ -173,18 +203,25 @@ export default {
       this.questions.splice(index2, 1, c)
     },
 
-    updateQuiz: function() {
+    updateQuiz () {
       var quizRef = this.$store.state.db.collection("quizzes").doc(this.$route.params.quiz.id);
-      if(this.file.name != this.$route.params.quiz.data.image){ this.uploadFile() }
+      if(this.file.name != this.$route.params.quiz.data.image){ 
+        Storage.upload(this.file, this.$store.state.currentUser.uid + '/') 
+      }
 
       return quizRef.update({
           image: this.file.name,
           title: this.quizTitle,
+          category: this.category,
           description: this.description,
           questions: this.questions
       })
-      .then(function() {
-          console.log("Document successfully updated!");
+      .then(() => {
+          for(var i = 0; i < this.questionFiles.length; i++){
+            if(this.questionFiles[i].name !== undefined){
+              Storage.upload(this.questionFiles[i], this.$store.state.currentUser.uid + '/media/')
+            }
+          }
       })
       .catch(function(error) {
           // The document probably doesn't exist.
@@ -192,7 +229,7 @@ export default {
       });
     },
 
-    createQuiz: function() {  
+    createQuiz () {  
       if(this.errors.items.length === 0){
 
         var uid = this.$store.state.currentUser.uid
@@ -206,11 +243,17 @@ export default {
           image: filename,
           title: this.quizTitle,
           description: this.description,
+          category: this.category,
           questions: this.questions
         })
         .then(() => {
           console.log("Document successfully written!");
-          if(this.file.name){ this.uploadFile() }
+          if(this.file.name){ Storage.upload(this.file, this.$store.state.currentUser.uid + '/') }
+          for(var i = 0; i < this.questionFiles.length; i++){
+            if(this.questionFiles[i].name !== undefined){
+              Storage.upload(this.questionFiles[i], this.$store.state.currentUser.uid + '/media/')
+            }
+          }
           
         })
         .catch(function(error) {
@@ -220,17 +263,7 @@ export default {
       
     },
 
-    uploadFile: function() {
-      var uid = this.$store.state.currentUser.uid
-      var storageRef = this.$store.state.storage.ref()
-      var imagesRef = storageRef.child(uid+'/'+this.file.name);
-      var file = this.file 
-      imagesRef.put(file).then(function(snapshot) {
-        console.log('Uploaded a file!')
-      })
-    },
-
-    addFile: function(event) {
+    addFile (event) {
       var files = event.target.files || event.dataTransfer.files;
       if (!files.length){ return }
       console.log(files[0])
@@ -252,6 +285,7 @@ export default {
       this.isUpdating = true
       this.quizTitle = quiz.data.title
       this.description = quiz.data.description
+      this.category = quiz.data.category
       this.questions = quiz.data.questions
       this.file.name = quiz.data.image
 

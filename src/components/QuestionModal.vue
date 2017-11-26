@@ -46,8 +46,8 @@
                     </span>
                   </label>
                 </div>
-                <p> {{ media.name }} </p>
-                <p> {{ media.type }} </p>
+                <p v-if="questionData.media"> {{ questionData.media.name }} </p>
+                <p v-if="questionData.media"> {{ questionData.media.type }} </p>
               </div>
             </div>
 
@@ -73,7 +73,7 @@
 
         <footer class="modal-card-foot">
           <button @click="addQuestion" class="button is-success">Add Question</button>
-          <button  @click="closeModal" class="button">Cancel</button>
+          <button @click="closeModal" class="button">Cancel</button>
         </footer>
       </div>
     </div>
@@ -90,9 +90,8 @@ export default {
       questionData: {
         question: '',
         answers: '',
-        media: null
-      },
-      media: {}
+        media: ''
+      }
     }
   },
   props: ['active'],
@@ -108,9 +107,7 @@ export default {
         vm.thumbnailImage = event.target.result;
       };
       reader.readAsDataURL(files[0]);
-      this.media = files[0]
-      this.questionData.media = this.media.name
-      console.log(this.media)
+      this.questionData.media = files[0]
     },
 
     closeModal () {

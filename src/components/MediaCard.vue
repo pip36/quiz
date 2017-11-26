@@ -16,6 +16,9 @@
             <p class="title is-4">
               <slot name="title"></slot>
             </p>
+            <p class="title is-6">
+              <slot name="category"></slot>
+            </p>
             <p class="subtitle is-6">
               <slot name="description"></slot>
             </p>
@@ -36,6 +39,8 @@
 </template>
 
 <script>
+
+import Storage from '@/helpers/firestoreHelper'
 
 export default {
   name: 'MediaCard',
@@ -60,14 +65,10 @@ export default {
     }
   },
   methods: {
-    loadImage: function(path){
-      var pathRef = this.$store.state.storage.ref(path)
-      pathRef.getDownloadURL().then((url) => {
+    loadImage (path) {
+      Storage.download(path, (url) => {
         this.imageURL = url
-      }).catch(function(error) {
-        //TODO Error Handling
-        console.log(error.message)
-      });
+      })
     }
   }
 }

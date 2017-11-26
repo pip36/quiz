@@ -31,8 +31,8 @@ const store = new Vuex.Store({
       state.currentUser = user
     },
 
-    logout (state, user) {
-      state.currentUser = user
+    logout (state) {
+      state.currentUser = null
     }
   }
 })
@@ -49,12 +49,10 @@ firebase.auth().onAuthStateChanged(function (user) {
     // var providerData = user.providerData;
     // ...
     store.commit('login', user)
-    console.log(user.email + ' is signed in')
   } else {
     // User is signed out.
     // ...
-    store.commit('logout', null)
-    console.log('signedOut')
+    store.commit('logout')
   }
 })
 

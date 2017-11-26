@@ -4,6 +4,7 @@
   
     <ul class="has-text-centered">
       <h2 class="subtitle"> {{question.title }} </h2>
+      <img :src="imageUrl" class="image is-128x128">
       <li v-for="(answer, index) in shuffledAnswers" :key="index">
         <div :class="{'notification': true, 
                       'is-success': answer===selectedAnswer && correct,
@@ -24,12 +25,25 @@
 
 <script>
 
+import Storage from '@/helpers/firestoreHelper'
+
 export default {
   name: 'Question',
-  props: ['question', 'correct', 'answered'],
+  props: ['question', 'owner', 'correct', 'answered'],
   data () {
     return {
-      selectedAnswer: null
+      selectedAnswer: null,
+      imageUrl: null
+    }
+  },
+  mounted () {
+    if(this.question.media){
+      this.loadImage(this.owner + '/media/' + this.question.media)
+    }
+  },
+  watch: {
+    question: function() {
+       this.loadImage(this.owner + '/media/' + this.question.media)
     }
   },
   computed: {
@@ -55,6 +69,12 @@ export default {
       }else{
         this.$emit('answer', false)  
       }   
+    },
+
+    loadImage (path) {
+      Storage.download(path, (url) => {
+        this.imageUrl = url
+      })
     }
   }
 }

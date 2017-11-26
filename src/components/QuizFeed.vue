@@ -6,6 +6,7 @@
     <div v-for="quiz in quizzes">    
       <media-card :quiz="quiz"> 
         <router-link slot="title" :to="{ name: 'Quiz', params: { id: quiz.id } }">{{ quiz.data.title }} </router-link>
+        <p slot="category"> {{quiz.data.category}} </p>
         <p slot="description"> {{quiz.data.description}} </p>
       </media-card>
     </div>

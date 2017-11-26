@@ -24,6 +24,9 @@ export default {
   name: 'Home',
   components: {
     'quiz-feed': QuizFeed
+  },
+  mounted() {
+    console.log(this.$store.state.db)
   }
 }
 </script>

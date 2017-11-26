@@ -27,7 +27,7 @@
         <router-link v-show="loggedIn" class="navbar-item" to="/profile">
           <strong>Profile</strong>
         </router-link>
-        <a v-show="loggedIn" @click="signOut" class="navbar-item">
+        <a v-show="loggedIn" @click="signOut" class="navbar-item" id="logout">
           <strong>logout</strong>
         </a>
       </div>
@@ -37,19 +37,18 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import Auth from '@/authentication/auth'
 
 export default {
   name: 'Navbar',
   computed: {
     loggedIn: function() {
-      if(this.$store.state.currentUser.uid){ return true }
-      return false
+      return Auth.isLoggedIn()
     }
   },
   methods: {
     signOut() {
-      firebase.auth().signOut()
+      Auth.logout()
       this.$router.push('/')
     }
   }

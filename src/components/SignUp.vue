@@ -43,7 +43,7 @@
           <p :v-show="errors.has('password')" class="help is-danger">{{errors.first('password')}}</p>
         </div>
 
-        <button :disabled="errors.any()" class="button is-primary is-large" @click="createAccount"> Create Account </button>
+        <button :disabled="errors.any()" class="button is-primary is-large" @click="signUp()"> Create Account </button>
   
       </div>
     </section>
@@ -53,7 +53,7 @@
 
 <script>
 
-import firebase from 'firebase'
+import Auth from '@/authentication/auth'
 
 export default {
   name: 'SignUp',
@@ -64,16 +64,9 @@ export default {
     }
   },
   methods:{
-    createAccount: function() {
-      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-      .then(() => {
+    signUp () {
+      Auth.createAccount(this.email, this.password, () => {
         this.$router.push('/')
-      })
-      .catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorMessage)
       })
     }
   }

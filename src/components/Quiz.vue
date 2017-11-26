@@ -10,6 +10,7 @@
 
           <question 
             :question="quiz.questions[currentQuestion]"
+            :owner="quiz.owner"
             :correct="correct"
             :answered="answered"
             @answer="setCorrect($event)"> 
