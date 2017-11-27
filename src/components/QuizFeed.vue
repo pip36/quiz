@@ -3,8 +3,8 @@
    
     <h1 class="subtitle"> <slot></slot> </h1>
 
-    <div v-for="quiz in quizzes">    
-      <media-card :quiz="quiz"> 
+    <div v-for="(quiz, index) in quizzes" :key="quiz.id">    
+      <media-card :quiz="quiz" @delete="deleteQuiz(quiz.id, index)"> 
         <router-link slot="title" :to="{ name: 'Quiz', params: { id: quiz.id } }">{{ quiz.data.title }} </router-link>
         <p slot="category"> {{quiz.data.category}} </p>
         <p slot="description"> {{quiz.data.description}} </p>
@@ -37,7 +37,7 @@ export default {
   
   methods: {
 
-    getQuizzes: function() {
+    getQuizzes () {
       if(this.tag === undefined){
         var ref = this.$store.state.db.collection("quizzes")
       }
@@ -57,6 +57,17 @@ export default {
         })
       })
 
+    },
+
+    deleteQuiz (id, index) {
+      if(confirm('Are you sure you want to delete this quiz?')){
+        this.$store.state.db.collection("quizzes").doc(id).delete().then(() => {
+            console.log("Document successfully deleted!");
+            this.quizzes.splice(index,1)
+        }).catch(function(error) {
+            console.error("Error removing document: ", error);
+        });
+      }
     }
     
   }

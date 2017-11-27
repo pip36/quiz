@@ -89,7 +89,7 @@
               <ul>
                 <li v-for="(question, index) in questions">
                   {{ question.title }} 
-                  <button @click="questions.splice(index,1)" class="delete is-primary" aria-label="remove"></button> 
+                  <button @click="removeQuestion(index)" class="delete is-primary" aria-label="remove"></button> 
                 </li>
               </ul>
               <div class="control">
@@ -127,7 +127,7 @@
            
            <ul>
               <li v-for="(question, index) in questions">
-                <question-card @swap="swapCard(index,index-1)"> 
+                <question-card @swap="swapCard(index,index-1)" @delete="removeQuestion(index)"> 
                   {{ question.title }} 
                 </question-card>             
               </li>
@@ -180,23 +180,31 @@ export default {
   },
   methods: {
 
-    addQuestion: function(data) {
+    addQuestion (data) {
      
       console.log(data)
+      var filename = data.media
+      if( filename.name){filename = filename.name}
      
       var newQuestion = {
         title: data.question,
         possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
         correctAnswer: data.answers.split('\n')[0],
-        media: data.media.name,
+        media: filename,
       }
       this.questions.push(newQuestion)
       this.questionFiles.push(data.media)
-      this.questionCreatorActive = false
-      
+      this.questionCreatorActive = false  
     },
 
-    swapCard: function(index1, index2) {
+    removeQuestion (index) {  
+      if(confirm('Are you sure you want to delete?')){
+        this.questionFiles.splice(index,1)
+        this.questions.splice(index,1)
+      }  
+    },
+
+    swapCard (index1, index2) {
       if(index1 <= 0){ return false }
       var c = this.questions[index1]
       this.questions.splice(index1, 1, this.questions[index2])
@@ -222,6 +230,7 @@ export default {
               Storage.upload(this.questionFiles[i], this.$store.state.currentUser.uid + '/media/')
             }
           }
+          this.$router.push('/profile')
       })
       .catch(function(error) {
           // The document probably doesn't exist.
@@ -254,6 +263,7 @@ export default {
               Storage.upload(this.questionFiles[i], this.$store.state.currentUser.uid + '/media/')
             }
           }
+          this.$router.push('/profile')
           
         })
         .catch(function(error) {

@@ -3,8 +3,8 @@
   <div class="question">
   
     <ul class="has-text-centered">
-      <h2 class="subtitle"> {{question.title }} </h2>
-      <img :src="imageUrl" class="image is-128x128">
+      <h2 class="subtitle"> {{question.title }} </h2> 
+        <img v-if="imageUrl" :src="imageUrl" class="image is-128x128 center">    
       <li v-for="(answer, index) in shuffledAnswers" :key="index">
         <div :class="{'notification': true, 
                       'is-success': answer===selectedAnswer && correct,
@@ -15,6 +15,10 @@
             :disabled="answered"> 
             {{answer}} 
           </button>
+          <div v-if="answered && answer===selectedAnswer" class="content">
+            <p v-if="correct"> Correct! </p>
+            <p v-else> Wrong! </p>
+          </div>
         </div>
       </li> 
     </ul>
@@ -84,5 +88,10 @@ export default {
 <style scoped>
   .answer{
     min-width: 200px;
+  }
+
+  .center{
+    margin-left: auto;
+    margin-right: auto;
   }
 </style>

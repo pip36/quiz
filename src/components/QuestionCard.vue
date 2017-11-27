@@ -9,8 +9,8 @@
       </div>
       <footer class="card-footer">
         <a @click="swap" class="card-footer-item">MoveUp</a>
-        <a href="#" class="card-footer-item">Edit(todo)</a>
-        <a href="#" class="card-footer-item">Delete(todo)</a>
+        <!-- <a href="#" class="card-footer-item">Edit(todo)</a> -->
+        <a @click="remove" class="card-footer-item">Delete</a>
       </footer>
     </div>
     
@@ -24,6 +24,9 @@ export default {
   methods: {
     swap: function(){
       this.$emit('swap')
+    },
+    remove: function(){
+      this.$emit('delete')
     }
   }
 }

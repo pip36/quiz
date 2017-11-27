@@ -33,7 +33,7 @@
           </div>
         </template>
 
-        <results v-show="finished" :correctAnswers="correctAnswers" :questions="quiz.questions"> </results>
+        <results v-if="finished" :correctAnswers="correctAnswers" :questions="quiz.questions"> </results>
   
       </div>
     </section>

@@ -16,7 +16,7 @@
             <p class="title is-4">
               <slot name="title"></slot>
             </p>
-            <p class="title is-6">
+            <p class="subtitle is-5">
               <slot name="category"></slot>
             </p>
             <p class="subtitle is-6">
@@ -26,10 +26,13 @@
 
           <div class="media-right">
             <router-link
+              class="button is-small"
               v-if="quiz && quiz.data.owner === currentUserId" 
               :to="{name: 'QuizMaker', params: { quiz: quiz }}">
               edit
             </router-link>
+            </br>
+            <a class="button is-small" @click="remove" v-if="quiz && quiz.data.owner === currentUserId"> Delete </a>
           </div>        
         </div>
       </div>
@@ -69,6 +72,9 @@ export default {
       Storage.download(path, (url) => {
         this.imageURL = url
       })
+    },
+    remove () {
+      this.$emit('delete')
     }
   }
 }

@@ -17,5 +17,19 @@ export default {
       // TODO Error Handling
       console.log(error.message)
     })
+  },
+
+  delete (path, callback) {
+    // Create a reference to the file to delete
+    var imageRef = store.state.storage.ref().child(path)
+
+    // Delete the file
+    imageRef.delete().then(function () {
+      console.log('delete success')
+      callback()
+    }).catch(function (error) {
+      // Uh-oh, an error occurred!
+      console.log(error)
+    })
   }
 }
