@@ -5,34 +5,38 @@
       <div class="card-content">
         <div class="media">
           <div class="media-left">
-            <figure class="image is-64x64">
-              <slot name="image">
-                <img :src="imageURL">  
-              </slot>        
-            </figure>
+            <img v-if="altSrc !== undefined" id="image" class="image is-64x64" :src="altSrc">     
+            <img v-else id="image" class="image is-64x64" :src="imageUrl">                  
           </div>
 
           <div class="media-content">
-            <p class="title is-4">
-              <slot name="title"></slot>
+            <p id="title" class="title is-4">
+              <router-link slot="title" :to="{ name: 'Quiz', params: { id: quiz.id } }">{{ quiz.data.title }} </router-link>
             </p>
-            <p class="subtitle is-5">
-              <slot name="category"></slot>
+            <p id="category" class="subtitle is-5">
+              {{quiz.data.category}}
             </p>
-            <p class="subtitle is-6">
-              <slot name="description"></slot>
+            <p id="description" class="subtitle is-6">
+              {{quiz.data.description}}
             </p>
           </div>
 
-          <div class="media-right">
+          <div v-if="quiz && quiz.data.owner === currentUser" class="media-right">
             <router-link
+              id="edit-button"
               class="button is-small"
-              v-if="quiz && quiz.data.owner === currentUserId" 
+              
               :to="{name: 'QuizMaker', params: { quiz: quiz }}">
               edit
             </router-link>
             </br>
-            <a class="button is-small" @click="remove" v-if="quiz && quiz.data.owner === currentUserId"> Delete </a>
+            <a 
+              class="button is-small" 
+              id="delete-button"
+              ref="deleteButton"
+              @click="remove">
+                Delete 
+            </a>
           </div>        
         </div>
       </div>
@@ -44,37 +48,34 @@
 <script>
 
 import Storage from '@/helpers/firestoreHelper'
+import Auth from '@/authentication/auth'
 
 export default {
   name: 'MediaCard',
-  props: ['quiz'],
+  props: ['quiz', 'altSrc'],
   data () {
     return {
-      imageURL: "/static/question.png"
+      imageUrl: "/static/question.png"
+    }
+  },
+  computed: {
+    currentUser: function() {
+      return Auth.currentUser()
     }
   },
   mounted () {
-    if(this.quiz && this.quiz.data.image !== '/static/question.png'){
-      this.loadImage(this.imagePath)
-    }
-    
-  },
-  computed: {
-    imagePath: function() {
-      return this.quiz.data.owner+'/'+this.quiz.data.image
-    },
-    currentUserId: function(){
-      return this.$store.state.currentUser.uid
-    }
+    if(this.quiz && this.altSrc === undefined && this.quiz.data.image !== '/static/question.png'){
+      Storage.download(this.getImagePath(), (url) => {
+        this.imageUrl = url
+      })
+    }    
   },
   methods: {
-    loadImage (path) {
-      Storage.download(path, (url) => {
-        this.imageURL = url
-      })
-    },
     remove () {
       this.$emit('delete')
+    },
+    getImagePath () {
+      return this.quiz.data.owner+'/'+this.quiz.data.image
     }
   }
 }

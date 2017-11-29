@@ -3,12 +3,33 @@
    
     <section class="section">
       <div class="container has-text-centered">
-        <h1 class="title">Simple Quiz</h1>
+        <h1 class="title">Quizzical</h1>
         <p class="subtitle">Take and make your own quizzes!</p>
         <router-link class="button is-primary" to="/quizzes">All Quizzes</router-link>
 
         <div class="content category-division">         
           <quiz-feed tag="popular"> Popular </quiz-feed>      
+        </div>
+
+         <div class="field">
+            <label class="label">View by Category</label>
+            <div class="control">
+              <div class="select">
+                <select v-model="activeCategory" name="category">
+                  <option>Animals</option>
+                  <option>Sport</option>
+                  <option>Politics</option>
+                  <option>Just for fun</option>
+                  <option>Music</option>
+                  <option>People</option>
+                  <option>Geography</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+        <div class="content category-division">         
+          <quiz-feed :category="activeCategory"> {{ activeCategory }} </quiz-feed>      
         </div>
       </div>
     </section>
@@ -25,8 +46,10 @@ export default {
   components: {
     'quiz-feed': QuizFeed
   },
-  mounted() {
-    console.log(this.$store.state.db)
+  data () {
+    return {
+      activeCategory: 'Animals'
+    }
   }
 }
 </script>
@@ -35,5 +58,8 @@ export default {
 <style scoped>
   .category-division{
     margin-top: 20px;
+  }
+  .field{
+    text-align: left;
   }
 </style>

@@ -5,7 +5,7 @@
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">Add New Question</p>
-          <button class="delete" aria-label="close" @click="closeModal"></button>
+          <button class="delete" aria-label="close" id="close-icon" @click="closeModal"></button>
         </header>
 
         <section class="modal-card-body">
@@ -33,6 +33,7 @@
                   <label class="file-label">
                     <input 
                       @change="addMedia"
+                      v-validate="{image: true, size: 500}"
                       class="file-input" 
                       type="file" 
                       name="file">
@@ -46,6 +47,7 @@
                     </span>
                   </label>
                 </div>
+                <p class="help is-danger" v-show="errors.has('file')">{{ errors.first('file') }} </p>
                 <p v-if="questionData.media"> {{ questionData.media.name }} </p>
                 <p v-if="questionData.media"> {{ questionData.media.type }} </p>
               </div>
@@ -72,8 +74,8 @@
         </section>
 
         <footer class="modal-card-foot">
-          <button @click="addQuestion" class="button is-success">Add Question</button>
-          <button @click="closeModal" class="button">Cancel</button>
+          <button @click="addQuestion" id="create-button" class="button is-success">Add Question</button>
+          <button @click="closeModal" id="close-button" class="button">Cancel</button>
         </footer>
       </div>
     </div>
@@ -97,15 +99,13 @@ export default {
   props: ['active'],
   methods: {
     addMedia (event) {
+      console.log(event)
       var files = event.target.files || event.dataTransfer.files;
       if (!files.length){ return }
       var image = new Image();
       var reader = new FileReader();
       var vm = this;
 
-      reader.onload = (event) => {
-        vm.thumbnailImage = event.target.result;
-      };
       reader.readAsDataURL(files[0]);
       this.questionData.media = files[0]
     },
@@ -116,7 +116,7 @@ export default {
 
     addQuestion () {
       if(this.errors.items.length === 0){
-        this.$emit('sendQuestionData', this.questionData)
+        this.$emit('createQuestion', this.questionData)
       }           
     }
   }

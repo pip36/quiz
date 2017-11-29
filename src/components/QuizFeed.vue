@@ -4,12 +4,12 @@
     <h1 class="subtitle"> <slot></slot> </h1>
 
     <div v-for="(quiz, index) in quizzes" :key="quiz.id">    
-      <media-card :quiz="quiz" @delete="deleteQuiz(quiz.id, index)"> 
-        <router-link slot="title" :to="{ name: 'Quiz', params: { id: quiz.id } }">{{ quiz.data.title }} </router-link>
-        <p slot="category"> {{quiz.data.category}} </p>
-        <p slot="description"> {{quiz.data.description}} </p>
-      </media-card>
+      <media-card :quiz="quiz" @delete="deleteQuiz(quiz.id, index)"> </media-card>
     </div>
+    <div v-if="quizzes.length === 0 && !isLoading" class="notification"> 
+      <h3> Oops, no quizzes found </h3> 
+    </div>
+    <div v-if="isLoading" class="button is-loading"> </div>
 
   </div>
 </template>
@@ -20,32 +20,44 @@ import MediaCard from '@/components/MediaCard'
 
 export default {
   name: 'Home',
-  props: ['tag'],
+  props: ['tag', 'category'],
   components: {
     'media-card': MediaCard
   },
 
   data () {
     return{
-      quizzes: []
+      quizzes: [],
+      isLoading: false
     }
   },
 
   created() {
     this.getQuizzes()
   },
+
+  watch: {
+    // whenever question changes, this function will run
+    category: function () {
+      this.quizzes = []
+      this.getQuizzes()
+    }
+  },
   
   methods: {
 
     getQuizzes () {
-      if(this.tag === undefined){
+      this.isLoading = true
+      if(this.tag === undefined && this.category === undefined){
         var ref = this.$store.state.db.collection("quizzes")
       }
       else if(this.tag === 'owned'){
         var uid = this.$store.state.currentUser.uid
         var ref = this.$store.state.db.collection('quizzes').where('owner', '==', uid)
-      }else{
+      }else if(this.tag !== undefined){
         var ref = this.$store.state.db.collection("quizzes").where('tags.'+this.tag, '==', 'true')
+      }else if(this.category !== undefined){
+        var ref = this.$store.state.db.collection("quizzes").where('category', '==', this.category)
       }
       
       ref.get().then((querySnapshot) => {
@@ -55,6 +67,7 @@ export default {
             data: doc.data() 
           })
         })
+        this.isLoading = false
       })
 
     },
@@ -79,4 +92,10 @@ export default {
   .category-division{
     margin-top: 20px;
   }
+  .is-loading{
+    width: 80px;
+    border: none;
+    font-size: 45px;
+  }
+  
 </style>

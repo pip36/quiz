@@ -7,8 +7,8 @@
         <img v-if="imageUrl" :src="imageUrl" class="image is-128x128 center">    
       <li v-for="(answer, index) in shuffledAnswers" :key="index">
         <div :class="{'notification': true, 
-                      'is-success': answer===selectedAnswer && correct,
-                      'is-danger': answer===selectedAnswer && !correct}"> 
+                      'is-success': answer===selectedAnswer && correct && answered,
+                      'is-danger': answer===selectedAnswer && !correct && answered}"> 
           <button 
             class="button is-info answer"
             @click="checkAnswer(index)"
@@ -41,13 +41,15 @@ export default {
     }
   },
   mounted () {
-    if(this.question.media){
+    if(this.question.media !== undefined){
       this.loadImage(this.owner + '/media/' + this.question.media)
     }
   },
   watch: {
     question: function() {
-       this.loadImage(this.owner + '/media/' + this.question.media)
+      if(this.question.media !== undefined){
+        this.loadImage(this.owner + '/media/' + this.question.media)
+      }
     }
   },
   computed: {

@@ -1,3 +1,4 @@
+/*
 import store from '@/vuex/store'
 
 describe('Store', () => {
@@ -40,3 +41,4 @@ describe('Store mutations', () => {
     })
   })
 })
+*/

@@ -15,19 +15,19 @@
 
     <div class="navbar-menu">
       <div class="navbar-end">
-        <router-link v-show="!loggedIn" class="navbar-item" to="/signup">
+        <router-link ref="signUpButton" v-if="!loggedIn" class="navbar-item" to="/signup">
           <strong>Create Account</strong>
         </router-link>
-        <router-link v-show="!loggedIn" class="navbar-item" to="/signin">
+        <router-link ref="logInButton" v-if="!loggedIn" class="navbar-item" to="/signin">
           <strong>Login</strong>
         </router-link>
-        <router-link v-show="loggedIn" class="navbar-item" to="/quizmaker">
+        <router-link ref="createQuizButton" v-if="loggedIn" class="navbar-item" to="/quizmaker">
           <strong>Make a Quiz</strong>
         </router-link>
-        <router-link v-show="loggedIn" class="navbar-item" to="/profile">
+        <router-link ref="profileButton" v-if="loggedIn" class="navbar-item" to="/profile">
           <strong>Profile</strong>
         </router-link>
-        <a v-show="loggedIn" @click="signOut" class="navbar-item" id="logout">
+        <a ref="logOutButton" id="logout" v-if="loggedIn" @click="signOut" class="navbar-item">
           <strong>logout</strong>
         </a>
       </div>
@@ -37,19 +37,13 @@
 </template>
 
 <script>
-import Auth from '@/authentication/auth'
 
 export default {
   name: 'Navbar',
-  computed: {
-    loggedIn: function() {
-      return Auth.isLoggedIn()
-    }
-  },
+  props: ['loggedIn'],
   methods: {
     signOut() {
-      Auth.logout()
-      this.$router.push('/')
+      this.$emit('logout')
     }
   }
 }

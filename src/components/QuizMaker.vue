@@ -10,30 +10,28 @@
               v-validate.initial="'required'" 
               type="hidden" 
               name="user"
-              :value="$store.state.currentUser.uid">
+              :value="currentUser">
 
-            <div class="field">
+            <div id="title-field" class="field">
               <label class="label">Quiz Title</label>
               <div class="control">
                 <input                
                   v-validate="{required: true}"
-                  v-validate.initial="'required'"
-                  v-model="quizTitle" 
+                  v-model="quiz.title" 
                   :class="{'input': true, 'is-danger': errors.has('title')}" 
                   type="text" 
                   name="title"
                   placeholder="Enter your quiz title...">
               </div>
-              <p class="help is-danger" v-show="errors.has('title')">{{ errors.first('title') }}</p>
+              <p id="title-error-message" class="help is-danger" v-show="errors.has('title')">{{ errors.first('title') }}</p>
             </div>
 
-            <div class="field">
+            <div id="description-field" class="field">
               <label class="label">Description</label>
               <div class="control">
                 <textarea 
                   v-validate="{required: true}"
-                  v-validate.initial="'required'"
-                  v-model="description" 
+                  v-model="quiz.description" 
                   :class="{'textarea':true, 'is-danger': errors.has('description')}" 
                   type="text" 
                   name="description"
@@ -43,14 +41,14 @@
               <p class="help is-danger" v-show="errors.has('description')">{{ errors.first('description') }} </p>
             </div>
 
-            <div class="field">
+            <div id="image-field" class="field">
               <label class="label">Image Thumbnail</label>
-              <img :src='thumbnailImage' class="image is-64x64"/>
+              <img :src="thumbnailImage" class="image is-64x64"/>
               <div class="control">
                 <div :class="{'file':true, 'has-name':true, 'is-danger':errors.has('image')}">
                   <label class="file-label">
                     <input 
-                      v-validate="{image: true, size: 1000}"
+                      v-validate="{image: true, size: 500}"
                       @change="addFile" 
                       class="file-input" 
                       type="file" 
@@ -69,25 +67,27 @@
               </div>
             </div>
 
-            <div class="field">
+            <div id="category-field" class="field">
               <label class="label">Category</label>
               <div class="control">
                 <div class="select">
-                  <select v-model="category" name="category">
-                    <option>Nature</option>
+                  <select v-model="quiz.category" name="category">
+                    <option>Animals</option>
                     <option>Sport</option>
                     <option>Politics</option>
                     <option>Just for fun</option>
                     <option>Music</option>
+                    <option>People</option>
+                    <option>Geography</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            <div class="field">
+            <div id="questions-field" class="field">
               <label class="label">Questions</label>
               <ul>
-                <li v-for="(question, index) in questions">
+                <li v-for="(question, index) in quiz.questions">
                   {{ question.title }} 
                   <button @click="removeQuestion(index)" class="delete is-primary" aria-label="remove"></button> 
                 </li>
@@ -99,34 +99,34 @@
               </div>
             </div>
                        
-            <button 
+            <button
+              id="create-button" 
               :disabled="errors.any()" 
               v-show="!isUpdating" 
-              @click="createQuiz" 
+              @click="validateBeforeSubmit(createQuiz)" 
               class="button is-primary is-medium"> Create Quiz! </button>
             <button 
+              id="update-button"
               :disabled="errors.any()" 
               v-show="isUpdating" 
-              @click="updateQuiz" 
+              @click="validateBeforeSubmit(updateQuiz)" 
               class="button is-primary is-medium"> Update Quiz! </button>
           </aside>
 
-          <question-modal 
-            @sendQuestionData="addQuestion($event)" 
+          <question-modal
+            ref="questionModal" 
+            @createQuestion="addQuestion($event)" 
             @close="questionCreatorActive = false" 
             :active="questionCreatorActive"> 
           </question-modal>
 
-         <main class="column is-9 has-text-centered"> 
-           <media-card>
-             <img v-if="!errors.has('image') && thumbnailImage" slot="image" :src='thumbnailImage' class='image is-64x64'/>
-             <p slot="title"> {{quizTitle}} </p>
-             <p slot="category"> {{category}} </p>
-             <p slot="description"> {{description}} </p>
+         <main id="viewport" class="column is-9 has-text-centered"> 
+           <media-card :quiz="{data:quiz}" :altSrc="thumbnailImage">
+             
            </media-card>
            
            <ul>
-              <li v-for="(question, index) in questions">
+              <li v-for="(question, index) in quiz.questions">
                 <question-card @swap="swapCard(index,index-1)" @delete="removeQuestion(index)"> 
                   {{ question.title }} 
                 </question-card>             
@@ -159,12 +159,16 @@ export default {
     'media-card': MediaCard,
     'question-card': QuestionCard
   },
+  props: ['currentUser'],
   data () {
     return {
-      quizTitle: '',
-      description: '',
-      category: '',
-      questions: [],
+      quiz: {
+        quizTitle: '',
+        description: '',
+        category: '',
+        questions: [],
+        image: undefined
+      },    
       questionFiles: [],
       questionCreatorActive: false,
       questionIsPresent: false,
@@ -174,15 +178,13 @@ export default {
     }  
   },
   mounted() {
-    if(this.$route.params.quiz){
+    if(this.$route && this.$route.params.quiz){
       this.loadQuizToForm(this.$route.params.quiz)
     }
   },
   methods: {
 
     addQuestion (data) {
-     
-      console.log(data)
       var filename = data.media
       if( filename.name){filename = filename.name}
      
@@ -192,7 +194,7 @@ export default {
         correctAnswer: data.answers.split('\n')[0],
         media: filename,
       }
-      this.questions.push(newQuestion)
+      this.quiz.questions.push(newQuestion)
       this.questionFiles.push(data.media)
       this.questionCreatorActive = false  
     },
@@ -200,48 +202,58 @@ export default {
     removeQuestion (index) {  
       if(confirm('Are you sure you want to delete?')){
         this.questionFiles.splice(index,1)
-        this.questions.splice(index,1)
+        this.quiz.questions.splice(index,1)
       }  
     },
 
     swapCard (index1, index2) {
       if(index1 <= 0){ return false }
       var c = this.questions[index1]
-      this.questions.splice(index1, 1, this.questions[index2])
-      this.questions.splice(index2, 1, c)
+      this.quiz.questions.splice(index1, 1, this.quiz.questions[index2])
+      this.quiz.questions.splice(index2, 1, c)
     },
 
     updateQuiz () {
       var quizRef = this.$store.state.db.collection("quizzes").doc(this.$route.params.quiz.id);
       if(this.file.name != this.$route.params.quiz.data.image){ 
-        Storage.upload(this.file, this.$store.state.currentUser.uid + '/') 
+        Storage.upload(this.file, this.currentUser + '/') 
       }
 
       return quizRef.update({
           image: this.file.name,
-          title: this.quizTitle,
-          category: this.category,
-          description: this.description,
-          questions: this.questions
+          title: this.quiz.title,
+          category: this.quiz.category,
+          description: this.quiz.description,
+          questions: this.quiz.questions
       })
       .then(() => {
           for(var i = 0; i < this.questionFiles.length; i++){
             if(this.questionFiles[i].name !== undefined){
-              Storage.upload(this.questionFiles[i], this.$store.state.currentUser.uid + '/media/')
+              Storage.upload(this.questionFiles[i], this.currentUser + '/media/')
             }
           }
           this.$router.push('/profile')
       })
       .catch(function(error) {
           // The document probably doesn't exist.
-          console.error("Error updating document: ", error);
-      });
+          console.error("Error updating document: ", error)
+      })
+    },
+
+    validateBeforeSubmit (callback) {
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          callback()
+          return
+        }
+        console.log("form validation error")
+      })
     },
 
     createQuiz () {  
       if(this.errors.items.length === 0){
 
-        var uid = this.$store.state.currentUser.uid
+        var uid = this.currentUser
         var filename = this.thumbnailImage
         if(this.file.name){
           filename = this.file.name
@@ -250,17 +262,17 @@ export default {
         this.$store.state.db.collection("quizzes").add({
           owner: uid,
           image: filename,
-          title: this.quizTitle,
-          description: this.description,
-          category: this.category,
-          questions: this.questions
+          title: this.quiz.title,
+          description: this.quiz.description,
+          category: this.quiz.category,
+          questions: this.quiz.questions
         })
         .then(() => {
           console.log("Document successfully written!");
-          if(this.file.name){ Storage.upload(this.file, this.$store.state.currentUser.uid + '/') }
+          if(this.file.name){ Storage.upload(this.file, this.currentUser + '/') }
           for(var i = 0; i < this.questionFiles.length; i++){
             if(this.questionFiles[i].name !== undefined){
-              Storage.upload(this.questionFiles[i], this.$store.state.currentUser.uid + '/media/')
+              Storage.upload(this.questionFiles[i], this.currentUser + '/media/')
             }
           }
           this.$router.push('/profile')
@@ -276,36 +288,27 @@ export default {
     addFile (event) {
       var files = event.target.files || event.dataTransfer.files;
       if (!files.length){ return }
-      console.log(files[0])
       var image = new Image();
       var reader = new FileReader();
       var vm = this;
 
       reader.onload = (event) => {
         vm.thumbnailImage = event.target.result;
+        vm.quiz.image = event.target.result;
       };
       reader.readAsDataURL(files[0]);
       this.file = files[0]
     },
 
-    loadQuizToForm: function(quiz) {
-      var uid = this.$store.state.currentUser.uid
-      var storageRef = this.$store.state.storage.ref(uid + '/' + quiz.data.image)
-
+    loadQuizToForm (quiz) {
+      var uid = this.currentUser
       this.isUpdating = true
-      this.quizTitle = quiz.data.title
-      this.description = quiz.data.description
-      this.category = quiz.data.category
-      this.questions = quiz.data.questions
+      this.quiz = quiz.data
       this.file.name = quiz.data.image
-
-      storageRef.getDownloadURL().then((url) => {
-        // Or inserted into an <img> element:
+      Storage.download(uid + '/' + quiz.data.image, (url) => {
         this.thumbnailImage = url
-      }).catch(function(error) {
-        // Handle any errors
-        console.log("error getting image")
       })
+      
     }
   } 
 }

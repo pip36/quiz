@@ -1,37 +1,57 @@
 import Auth from '@/authentication/auth'
-import Store from '@/vuex/store'
+import { shallow, createLocalVue } from 'vue-test-utils'
+import Vuex from 'vuex'
+import sinon from 'sinon'
+import firebase from 'firebase'
+import Home from '@/components/Home'
 
-var testUser = {
-  uid: 'uid'
-}
+const localVue = createLocalVue()
+localVue.use(Vuex)
+
+let loginStub = sinon.stub(firebase.auth(), 'signInWithEmailAndPassword')
+
+loginStub.callsFake(function fake(email, password) {
+  if(email && password){
+    return new firebase.Promise.resolve('success')
+  }else{
+    return new firebase.Promise.reject('error')
+  }
+})
 
 describe('Auth functions', () => {
+
+  describe('login', () => {
+    it('should be a function', () => {
+      expect(typeof Auth.login).to.equal('function')
+    })
+
+    describe('invalid', () => {
+      let spycallback = sinon.spy()
+      Auth.login(undefined, undefined, spycallback)
+      it('should not run callback on failed login', () => {    
+        expect(spycallback.called).to.be.false   
+      })
+    })
+
+    describe('valid', () => {
+      let spycallback = sinon.spy()
+      Auth.login('user', 'password', spycallback)
+      it('should run callback on successfull login', () => {    
+        expect(spycallback.called).to.be.true    
+      })
+    })
+  })
 
   describe('logout', () => {
     it('should be a function', () => {
       expect(typeof Auth.logout).to.equal('function')
     })
-    it('should sign out a user', () => {
-      Auth.login('test@example.com', 'password')
+    it('should call firebases signOut function', () => {
+      let logoutStub= sinon.stub(firebase.auth(), 'signOut')
+      logoutStub.callsFake(() => {})
       Auth.logout()
-      expect(Auth.isLoggedIn()).to.equal(false)
+      expect(logoutStub.called).to.be.true
     })
   })
-
-  describe('currentUser', () => {
-    it('should be a function', () => {
-      expect(typeof Auth.currentUser).to.equal('function')
-    })
-
-    it('should return null if noone is logged in', () => {
-      Store.commit('logout')
-      expect(Auth.currentUser()).to.equal(null)
-    })
-
-    it('should return user uid if logged in', () => {
-      Store.commit('login', testUser)
-      expect(Auth.currentUser()).to.equal('uid')
-    })
-  })
-
 })
+
