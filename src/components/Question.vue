@@ -41,13 +41,13 @@ export default {
     }
   },
   mounted () {
-    if(this.question.media !== undefined){
+    if(this.question.media !== undefined && this.question.media != false){
       this.loadImage(this.owner + '/media/' + this.question.media)
     }
   },
   watch: {
     question: function() {
-      if(this.question.media !== undefined){
+      if(this.question.media !== undefined && this.question.media != false){
         this.loadImage(this.owner + '/media/' + this.question.media)
       }
     }

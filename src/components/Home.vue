@@ -18,7 +18,6 @@
                 <select v-model="activeCategory" name="category">
                   <option>Animals</option>
                   <option>Sport</option>
-                  <option>Politics</option>
                   <option>Just for fun</option>
                   <option>Music</option>
                   <option>People</option>
