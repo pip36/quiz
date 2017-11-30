@@ -13,24 +13,23 @@ localVue.use(VueRouter, Vuex, VeeValidate)
 describe('QuizMaker', () => {
   let store
   let errors
+  let wrapper
   beforeEach(() => {
     store = new Vuex.Store({
       state: {}
     })
     errors = new VeeValidate.ErrorBag()
+ 
+    wrapper = shallow(QuizMaker, { 
+      store,  
+      localVue,
+      mocks: {
+      errors  
+      } 
+    })
   })
   // Now mount the component and you have the wrapper
-  describe('Visuals', () => {
-    let wrapper
-    beforeEach(() => { 
-       wrapper = shallow(QuizMaker, { 
-            store,  
-            localVue,
-            mocks: {
-            errors  
-            } 
-        })
-    })
+  describe('Visuals', () => {   
     it('form should have a title field', () => {
       expect(wrapper.contains('#title-field')).to.be.true
     })
@@ -51,7 +50,32 @@ describe('QuizMaker', () => {
     })
     it('should have a viewport to display quiz template', () => {
       expect(wrapper.contains('#viewport')).to.be.true
+    }) 
+  })
+
+  describe('Functions', () => {  
+    beforeEach(() => {
+      wrapper.setData({
+        quiz: {
+          questions: [1,2]
+        }
+      })
+    }) 
+    it('should have a function swapCard', () => {
+      expect(typeof wrapper.vm.swapCard).to.equal('function')
     })
+    it('has quiz data set correctly', () => {
+      expect(wrapper.vm.quiz.questions.join('')).to.equal('12')
+    })
+    it('swapCard should swap 2 values in the questions array', () => {   
+      wrapper.vm.swapCard(1,0) //index 0,1
+      expect(wrapper.vm.quiz.questions.join('')).to.equal('21')
+    })
+    it('should not swap the first element below 0 index', () => {   
+      wrapper.vm.swapCard(0,1) //index 0,1
+      expect(wrapper.vm.quiz.questions.join('')).to.equal('12')
+    })
+   
   })
   
 })

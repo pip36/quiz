@@ -207,7 +207,7 @@ export default {
 
     swapCard (index1, index2) {
       if(index1 <= 0){ return false }
-      var c = this.questions[index1]
+      var c = this.quiz.questions[index1]
       this.quiz.questions.splice(index1, 1, this.quiz.questions[index2])
       this.quiz.questions.splice(index2, 1, c)
     },
