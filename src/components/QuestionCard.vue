@@ -10,7 +10,7 @@
       <footer class="card-footer">
         <a @click="swap" id="swap-button" class="card-footer-item">MoveUp</a>
         <!-- <a href="#" class="card-footer-item">Edit(todo)</a> -->
-        <a @click="remove" class="card-footer-item">Delete</a>
+        <a @click="remove" id="delete-button" class="card-footer-item">Delete</a>
       </footer>
     </div>
     

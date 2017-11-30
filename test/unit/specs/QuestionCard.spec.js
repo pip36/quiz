@@ -17,5 +17,16 @@ describe('QuestionCard', () => {
       assert.ok(wrapper.emitted().swap)
     })
   })
+
+  describe('Delete Button', () => {   
+    it('should exists in template', () => {
+      expect(wrapper.contains('#delete-button')).to.be.true
+    })
+    it('should emit swap event on click', () => {
+      var swapWrapper = wrapper.find('#delete-button')
+      swapWrapper.trigger('click')
+      assert.ok(wrapper.emitted().delete)
+    })
+  })
   
 })
