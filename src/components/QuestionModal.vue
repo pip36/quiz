@@ -74,7 +74,8 @@
         </section>
 
         <footer class="modal-card-foot">
-          <button @click="addQuestion" id="create-button" class="button is-success">Add Question</button>
+          <button v-if="!isEditing" @click="addQuestion" id="create-button" class="button is-success">Add Question</button>
+          <button v-if="isEditing" @click="editQuestion" id="edit-button" class="button is-success">Edit Question</button>
           <button @click="closeModal" id="close-button" class="button">Cancel</button>
         </footer>
       </div>
@@ -93,10 +94,31 @@ export default {
         question: '',
         answers: '',
         media: ''
-      }
+      },
+      isEditing: false
     }
   },
-  props: ['active'],
+  props: ['active', 'editData'],
+  mounted() {
+    if(this.editData !== undefined){
+      this.questionData = {
+        question: this.editData.question,
+        answers: this.editData.answers,
+        media: this.editData.media
+      }
+      this.isEditing = true
+    }
+  },
+  watch: {
+    editData: function () {
+      this.questionData = {
+        question: this.editData.question,
+        answers: this.editData.answers,
+        media: this.editData.media
+      }
+      this.isEditing = true
+    }
+  },
   methods: {
     addMedia (event) {
       console.log(event)
@@ -118,6 +140,13 @@ export default {
       if(this.errors.items.length === 0){
         this.$emit('createQuestion', this.questionData)
       }           
+    },
+
+    editQuestion () {
+      if(this.errors.items.length === 0){
+        this.$emit('editQuestion', this.questionData)
+        this.isEditing = false
+      }   
     }
   }
 }

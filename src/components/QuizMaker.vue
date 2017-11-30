@@ -114,9 +114,11 @@
 
           <question-modal
             ref="questionModal" 
-            @createQuestion="addQuestion($event)" 
+            @createQuestion="addQuestion($event)"
+            @editQuestion="editQuestion($event)" 
             @close="questionCreatorActive = false" 
-            :active="questionCreatorActive"> 
+            :active="questionCreatorActive"
+            :editData="questionEditData"> 
           </question-modal>
 
          <main id="viewport" class="column is-9 has-text-centered"> 
@@ -126,7 +128,7 @@
            
            <ul>
               <li v-for="(question, index) in quiz.questions">
-                <question-card @swap="swapCard(index,index-1)" @delete="removeQuestion(index)"> 
+                <question-card @swap="swapCard(index,index-1)" @delete="removeQuestion(index)" @edit="openEditor(index)"> 
                   {{ question.title }} 
                 </question-card>             
               </li>
@@ -167,13 +169,15 @@ export default {
         category: '',
         questions: [],
         image: undefined
-      },    
+      },
+      questionEditData: undefined,    
       questionFiles: [],
       questionCreatorActive: false,
       questionIsPresent: false,
       thumbnailImage: '/static/question.png',
       file: {},
-      isUpdating: false
+      isUpdating: false,
+      editIndex: null
     }  
   },
   mounted() {
@@ -185,7 +189,7 @@ export default {
 
     addQuestion (data) {
       var filename = data.media
-      if( filename.name){filename = filename.name}
+      if(filename.name !== undefined){filename = filename.name}
      
       var newQuestion = {
         title: data.question,
@@ -196,6 +200,28 @@ export default {
       this.quiz.questions.push(newQuestion)
       this.questionFiles.push(data.media)
       this.questionCreatorActive = false  
+    },
+
+    editQuestion (data) {
+      console.log(data)
+      var filename = ''
+      if(data.media !== undefined && data.media.file !== undefined){ 
+        filename = data.media.file
+      }
+
+      var newQuestion = {
+        title: data.question,
+        possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
+        correctAnswer: data.answers.split('\n')[0],
+        media: filename,
+      }
+      if(data.media !== undefined && data.media.file !== undefined){
+        this.questionFiles.push(data.media) 
+      }
+      this.quiz.questions[this.editIndex] = newQuestion
+      this.editIndex = null
+      this.questionCreatorActive = false  
+
     },
 
     removeQuestion (index) {  
@@ -306,8 +332,17 @@ export default {
       this.file.name = quiz.data.image
       Storage.download(uid + '/' + quiz.data.image, (url) => {
         this.thumbnailImage = url
-      })
-      
+      })      
+    },
+    openEditor (index) {
+      this.questionCreatorActive = true
+      var selectedQuestion = this.quiz.questions[index]
+      this.questionEditData = {
+        question: selectedQuestion.title,
+        answers: selectedQuestion.possibleAnswers.join('\n'),
+        media: selectedQuestion.media
+      }
+      this.editIndex = index
     }
   } 
 }
