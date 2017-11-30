@@ -9,7 +9,7 @@
       </div>
       <footer class="card-footer">
         <a @click="swap" id="swap-button" class="card-footer-item">MoveUp</a>
-        <!-- <a href="#" class="card-footer-item">Edit(todo)</a> -->
+        <a @click="edit" id="edit-button" class="card-footer-item">Edit</a>
         <a @click="remove" id="delete-button" class="card-footer-item">Delete</a>
       </footer>
     </div>
@@ -22,11 +22,14 @@
 export default {
   name: 'QuestionCard',
   methods: {
-    swap: function(){
+    swap () {
       this.$emit('swap')
     },
-    remove: function(){
+    remove () {
       this.$emit('delete')
+    },
+    edit () {
+      this.$emit('edit')
     }
   }
 }

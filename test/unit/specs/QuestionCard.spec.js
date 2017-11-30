@@ -34,7 +34,7 @@ describe('QuestionCard', () => {
       expect(wrapper.contains('#edit-button')).to.be.true
     })
     it('should emit edit event on click', () => {
-      var swapWrapper = wrapper.find('#delete-button')
+      var swapWrapper = wrapper.find('#edit-button')
       swapWrapper.trigger('click')
       assert.ok(wrapper.emitted().edit)
     })
