@@ -205,8 +205,8 @@ export default {
     editQuestion (data) {
       console.log(data)
       var filename = ''
-      if(data.media !== undefined && data.media.file !== undefined){ 
-        filename = data.media.file
+      if(data.media !== undefined && data.media.name !== undefined){ 
+        filename = data.media.name
       }
 
       var newQuestion = {
@@ -215,7 +215,7 @@ export default {
         correctAnswer: data.answers.split('\n')[0],
         media: filename,
       }
-      if(data.media !== undefined && data.media.file !== undefined){
+      if(data.media !== undefined && data.media.name !== undefined){
         this.questionFiles.push(data.media) 
       }
       this.quiz.questions[this.editIndex] = newQuestion
