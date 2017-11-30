@@ -22,10 +22,21 @@ describe('QuestionCard', () => {
     it('should exists in template', () => {
       expect(wrapper.contains('#delete-button')).to.be.true
     })
-    it('should emit swap event on click', () => {
+    it('should emit delete event on click', () => {
       var swapWrapper = wrapper.find('#delete-button')
       swapWrapper.trigger('click')
       assert.ok(wrapper.emitted().delete)
+    })
+  })
+
+  describe('Edit Button', () => {   
+    it('should exists in template', () => {
+      expect(wrapper.contains('#edit-button')).to.be.true
+    })
+    it('should emit edit event on click', () => {
+      var swapWrapper = wrapper.find('#delete-button')
+      swapWrapper.trigger('click')
+      assert.ok(wrapper.emitted().edit)
     })
   })
   
