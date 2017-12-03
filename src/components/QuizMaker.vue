@@ -72,11 +72,14 @@
               <div class="control">
                 <div class="select">
                   <select v-model="quiz.category" name="category">
-                    <option>Animals</option>
+                    <option>Science and Nature</option>
                     <option>Sport</option>
-                    <option>Just for fun</option>
+                    <option>General Knowledge</option>
                     <option>Music</option>
+                    <option>TV and Film</option>
+                    <option>History</option>
                     <option>People</option>
+                    <option>Quiz of the Year</option>
                     <option>Geography</option>
                   </select>
                 </div>
