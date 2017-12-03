@@ -15,7 +15,6 @@
               <div class="control">
                 <input 
                   v-validate="{required:true}"
-                  v-validate.initial="'required'"
                   v-model="questionData.question" 
                   :class="{'input': true, 'is-danger': errors.has('question')}" 
                   type="text" 
@@ -60,7 +59,6 @@
               <div class="control">
                 <textarea 
                   v-validate="{required:true}"
-                  v-validate.initial="'required'"
                   v-model="questionData.answers"           
                   :class="{'textarea': true, 'is-danger':errors.has('answers')}" 
                   type="textarea" 
@@ -74,8 +72,8 @@
         </section>
 
         <footer class="modal-card-foot">
-          <button v-if="!isEditing" @click="addQuestion" id="create-button" class="button is-success">Add Question</button>
-          <button v-if="isEditing" @click="editQuestion" id="edit-button" class="button is-success">Edit Question</button>
+          <button v-if="!isEditing" @click="validateBeforeSubmit(addQuestion)" id="create-button" class="button is-success">Add Question</button>
+          <button v-if="isEditing" @click="validateBeforeSubmit(editQuestion)" id="edit-button" class="button is-success">Edit Question</button>
           <button @click="closeModal" id="close-button" class="button">Cancel</button>
         </footer>
       </div>
@@ -147,6 +145,16 @@ export default {
         this.$emit('editQuestion', this.questionData)
         this.isEditing = false
       }   
+    },
+
+    validateBeforeSubmit (callback) {
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          callback()
+          return
+        }
+        console.log("form validation error")
+      })
     }
   }
 }

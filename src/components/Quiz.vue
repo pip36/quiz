@@ -33,7 +33,7 @@
           </div>
         </template>
 
-        <results v-if="finished" :correctAnswers="correctAnswers" :questions="quiz.questions"> </results>
+        <results v-if="finished" :correctAnswers="correctAnswers" :questions="quiz.questions" @reset="resetQuiz()"> </results>
   
       </div>
     </section>
@@ -82,6 +82,14 @@ export default {
       }).catch(function(error) {
         console.log("Error getting document:", error);
       });     
+    },
+
+    resetQuiz () {
+      this.currentQuestion = 0
+      this.answered = false
+      this.correct = null
+      this.finished = false
+      this.correctAnswers = 0
     },
 
     setCorrect(bool) {

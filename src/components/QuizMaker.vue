@@ -85,6 +85,12 @@
 
             <div id="questions-field" class="field">
               <label class="label">Questions</label>
+              <input
+                v-show="false"                
+                v-validate="{min_value: 1}"
+                type="text" 
+                name="questions"
+                v-model="quiz.questions.length">
               <ul>
                 <li v-for="(question, index) in quiz.questions">
                   {{ question.title }} 
@@ -96,6 +102,7 @@
                   Add Question            
                 </button>
               </div>
+               <p class="help is-danger" v-show="errors.has('questions')">{{ errors.first('questions') }} </p>
             </div>
                        
             <button
@@ -199,7 +206,7 @@ export default {
       }
       this.quiz.questions.push(newQuestion)
       this.questionFiles.push(data.media)
-      this.questionCreatorActive = false  
+      this.questionCreatorActive = false 
     },
 
     editQuestion (data) {
@@ -221,7 +228,6 @@ export default {
       this.quiz.questions[this.editIndex] = newQuestion
       this.editIndex = null
       this.questionCreatorActive = false  
-
     },
 
     removeQuestion (index) {  
@@ -303,8 +309,8 @@ export default {
           this.$router.push('/profile')
           
         })
-        .catch(function(error) {
-          this.$store.commit('addNotification', {type:'success', message:'Error creating quiz ' + error})
+        .catch((error) => {
+          this.$store.commit('addNotification', {type:'danger', message:'Error creating quiz ' + error})
         });
       }
       
