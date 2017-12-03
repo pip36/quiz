@@ -252,6 +252,7 @@ export default {
           questions: this.quiz.questions
       })
       .then(() => {
+          this.$store.commit('addNotification', {type:'success', message:'Quiz updated successfully!'})
           for(var i = 0; i < this.questionFiles.length; i++){
             if(this.questionFiles[i].name !== undefined){
               Storage.upload(this.questionFiles[i], this.currentUser + '/media/')
@@ -260,8 +261,7 @@ export default {
           this.$router.push('/profile')
       })
       .catch(function(error) {
-          // The document probably doesn't exist.
-          console.error("Error updating document: ", error)
+          this.$store.commit('addNotification', {type:'danger', message:'Error updating quiz ' + error})
       })
     },
 
@@ -293,7 +293,7 @@ export default {
           questions: this.quiz.questions
         })
         .then(() => {
-          console.log("Document successfully written!");
+          this.$store.commit('addNotification', {type:'success', message:'Quiz created successfully'})
           if(this.file.name){ Storage.upload(this.file, this.currentUser + '/') }
           for(var i = 0; i < this.questionFiles.length; i++){
             if(this.questionFiles[i].name !== undefined){
@@ -304,7 +304,7 @@ export default {
           
         })
         .catch(function(error) {
-          console.error("Error writing document: ", error);
+          this.$store.commit('addNotification', {type:'success', message:'Error creating quiz ' + error})
         });
       }
       

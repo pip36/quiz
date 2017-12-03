@@ -75,10 +75,10 @@ export default {
     deleteQuiz (id, index) {
       if(confirm('Are you sure you want to delete this quiz?')){
         this.$store.state.db.collection("quizzes").doc(id).delete().then(() => {
-            console.log("Document successfully deleted!");
+            this.$store.commit('addNotification', {type:'success', message:'Document successfully deleted!'})
             this.quizzes.splice(index,1)
         }).catch(function(error) {
-            console.error("Error removing document: ", error);
+            this.$store.commit('addNotification', {type:'danger', message:'Error deleting document ' + error})
         });
       }
     }

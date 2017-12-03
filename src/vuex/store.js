@@ -20,7 +20,8 @@ const store = new Vuex.Store({
     activeQuiz: null,
     db: firebase.firestore(),
     storage: firebase.storage(),
-    currentUser: null
+    currentUser: null,
+    notifications: []
   },
   mutations: {
     setQuiz (state, quizId) {
@@ -33,6 +34,14 @@ const store = new Vuex.Store({
 
     logout (state) {
       state.currentUser = null
+    },
+
+    removeNotification (state, index) {
+      state.notifications.splice(index, 1)
+    },
+
+    addNotification (state, object) {
+      state.notifications.push(object)
     }
   }
 })

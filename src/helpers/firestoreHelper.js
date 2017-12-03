@@ -5,7 +5,7 @@ export default {
     var storageRef = store.state.storage.ref()
     var imagesRef = storageRef.child(path + file.name)
     imagesRef.put(file).then((snapshot) => {
-      console.log('Uploaded a file to: ' + path + file.name)
+      console.log('Upload success')
     })
   },
 
@@ -14,22 +14,17 @@ export default {
     pathRef.getDownloadURL().then((url) => {
       callback(url)
     }).catch(function (error) {
-      // TODO Error Handling
-      console.log(error.message)
+      this.$store.commit('addNotification', { type: 'error', message: 'Error loading image: ' + error.message })
     })
   },
 
   delete (path, callback) {
-    // Create a reference to the file to delete
     var imageRef = store.state.storage.ref().child(path)
 
-    // Delete the file
     imageRef.delete().then(function () {
-      console.log('delete success')
       callback()
     }).catch(function (error) {
-      // Uh-oh, an error occurred!
-      console.log(error)
+      this.$store.commit('addNotification', { type: 'danger', message: 'Error removing image file: ' + error.message })
     })
   }
 }
