@@ -13,8 +13,8 @@ export default {
     var pathRef = store.state.storage.ref(path)
     pathRef.getDownloadURL().then((url) => {
       callback(url)
-    }).catch(function (error) {
-      this.$store.commit('addNotification', { type: 'error', message: 'Error loading image: ' + error.message })
+    }).catch((error) => {
+      store.commit('addNotification', { type: 'danger', message: 'Error loading image: ' + error.message })
     })
   },
 
@@ -23,8 +23,8 @@ export default {
 
     imageRef.delete().then(function () {
       callback()
-    }).catch(function (error) {
-      this.$store.commit('addNotification', { type: 'danger', message: 'Error removing image file: ' + error.message })
+    }).catch((error) => {
+      store.commit('addNotification', { type: 'danger', message: 'Error removing image file: ' + error.message })
     })
   }
 }

@@ -4,23 +4,36 @@
   
     <ul class="has-text-centered">
       <h2 class="subtitle"> {{question.title }} </h2> 
-        <img v-if="imageUrl" :src="imageUrl" class="image is-128x128 center">    
-      <li v-for="(answer, index) in shuffledAnswers" :key="index">
-        <div :class="{'notification': true, 
-                      'is-success': answer===selectedAnswer && correct && answered,
-                      'is-danger': answer===selectedAnswer && !correct && answered}"> 
-          <button 
-            class="button is-info answer"
-            @click="checkAnswer(index)"
-            :disabled="answered"> 
-            {{answer}} 
-          </button>
-          <div v-if="answered && answer===selectedAnswer" class="content">
-            <p v-if="correct"> Correct! </p>
-            <p v-else> Wrong! </p>
+      <img v-if="imageUrl" :src="imageUrl" class="image is-128x128 center">  
+
+      <div v-if="question.type == 'Multiple Choice'"> 
+        <li v-for="(answer, index) in shuffledAnswers" :key="index">
+          <div :class="{'notification': true, 
+                        'is-success': answer===selectedAnswer && correct && answered,
+                        'is-danger': answer===selectedAnswer && !correct && answered}"> 
+            <button 
+              class="button is-info answer"
+              @click="checkAnswer(index)"
+              :disabled="answered"> 
+              {{answer}} 
+            </button>
+            <div v-if="answered && answer===selectedAnswer" class="content">
+              <p v-if="correct"> Correct! </p>
+              <p v-else> Wrong! </p>
+            </div>
           </div>
-        </div>
-      </li> 
+        </li> 
+      </div>
+
+      <div v-if="question.type == 'Typed Answer'"> 
+        <input v-if="!answered" class="input" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
+        <button v-if="!answered" @click="$emit('answer', false)  " class="button is-primary"> I don't know </button>
+          <div v-if="correct && answered" class="notification is-success"> 
+            <div class="content">
+              <p> Correct! </p>
+            </div>
+          </div>
+      </div>
     </ul>
 
   </div>
@@ -50,6 +63,11 @@ export default {
       if(this.question.media !== undefined && this.question.media != false){
         this.loadImage(this.owner + '/media/' + this.question.media)
       }
+    },
+    selectedAnswer: function() {
+      if(this.question.type =='Typed Answer'){
+        this.typedCorrectMatch()
+      }
     }
   },
   computed: {
@@ -75,6 +93,18 @@ export default {
       }else{
         this.$emit('answer', false)  
       }   
+    },
+
+    typedCorrectMatch () {
+      var correctAnswers = this.question.possibleAnswers
+      for(var i = 0; i < correctAnswers.length; i++){
+        var answer = correctAnswers[i].replace(/\s/g, "").toLowerCase()
+        var typed = this.selectedAnswer.replace(/\s/g, "").toLowerCase()
+        if(answer === typed){
+          this.$emit('answer', true)
+        }
+      }
+      return false
     },
 
     loadImage (path) {

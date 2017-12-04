@@ -12,17 +12,6 @@
               name="user"
               :value="currentUser">
 
-            <div id="category-field" class="field">
-              <label class="label">Quiz Type</label>
-              <div class="control">
-                <div class="select">
-                  <select v-model="quiz.type" name="category">
-                    <option>Multiple Choice</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
             <div id="title-field" class="field">
               <label class="label">Quiz Title</label>
               <div class="control">
@@ -212,13 +201,28 @@ export default {
     addQuestion (data) {
       var filename = data.media
       if(filename.name !== undefined){filename = filename.name}
-     
-      var newQuestion = {
-        title: data.question,
-        possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
-        correctAnswer: data.answers.split('\n')[0],
-        media: filename,
+      
+      switch(data.type) {
+        case 'Multiple Choice':
+          var newQuestion = {
+            title: data.question,
+            possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
+            correctAnswer: data.answers.split('\n')[0],
+            media: filename,
+            type: data.type
+          }
+          break
+        case 'Typed Answer':
+          var newQuestion = {
+            title: data.question,
+            possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
+            correctAnswer: null,
+            media: filename,
+            type: data.type
+          }
+          break
       }
+
       this.quiz.questions.push(newQuestion)
       this.questionFiles.push(data.media)
       this.questionCreatorActive = false 
@@ -236,6 +240,7 @@ export default {
         possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
         correctAnswer: data.answers.split('\n')[0],
         media: filename,
+        type: data.type
       }
       if(data.media !== undefined && data.media.name !== undefined){
         this.questionFiles.push(data.media) 
@@ -281,7 +286,7 @@ export default {
           }
           this.$router.push('/profile')
       })
-      .catch(function(error) {
+      .catch((error) => {
           this.$store.commit('addNotification', {type:'danger', message:'Error updating quiz ' + error})
       })
     },
@@ -362,7 +367,8 @@ export default {
       this.questionEditData = {
         question: selectedQuestion.title,
         answers: selectedQuestion.possibleAnswers.join('\n'),
-        media: selectedQuestion.media
+        media: selectedQuestion.media,
+        type: selectedQuestion.type
       }
       this.editIndex = index
     }

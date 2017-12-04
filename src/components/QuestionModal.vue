@@ -10,72 +10,88 @@
 
         <section class="modal-card-body">
           <form>
-            <div class="field">
-              <label class="label">Question</label>
+            <div id="type-field" class="field">
+              <label class="label">Question Type</label>
               <div class="control">
-                <input 
-                  v-validate="{required:true}"
-                  v-model="questionData.question" 
-                  :class="{'input': true, 'is-danger': errors.has('question')}" 
-                  type="text" 
-                  name="question"
-                  placeholder="Type your question...">
-              </div>
-              <p class="help is-danger" v-show="errors.has('question')">You need to enter a question!</p> 
-            </div>
-
-            <div class="field">
-              <label class="label">Question Media</label>
-              <p class="help"> add media to question </p>
-              <div class="control">
-                <div :class="{'file':true, 'has-name':true}">
-                  <label class="file-label">
-                    <input 
-                      @change="addMedia"
-                      v-validate="{image: true, size: 500}"
-                      class="file-input" 
-                      type="file" 
-                      name="file">
-                    <span class="file-cta">
-                      <span class="file-icon">
-                        <i class="fa fa-upload"></i>
-                      </span>
-                      <span class="file-label">
-                        Choose a file…
-                      </span>
-                    </span>
-                  </label>
+                <div class="select">
+                  <select v-model="questionData.type" name="type">
+                    <option>Multiple Choice</option>
+                    <option>Typed Answer</option>
+                  </select>
                 </div>
-                <p class="help is-danger" v-show="errors.has('file')">{{ errors.first('file') }} </p>
-                <p v-if="questionData.media"> {{ questionData.media.name }} </p>
-                <p v-if="questionData.media"> {{ questionData.media.type }} </p>
               </div>
             </div>
 
+            <div v-if="questionData.type != ''">
+              <div class="field">
+                <label class="label">Question</label>
+                <div class="control">
+                  <input 
+                    v-validate="{required:true}"
+                    v-model="questionData.question" 
+                    :class="{'input': true, 'is-danger': errors.has('question')}" 
+                    type="text" 
+                    name="question"
+                    placeholder="Type your question...">
+                </div>
+                <p class="help is-danger" v-show="errors.has('question')">You need to enter a question!</p> 
+              </div>
 
-            <div class="field">
-              <label class="label">Answers</label>  
-              <p class="help">Put each answer on a new line. Correct answer at the top.</p>           
-              <div class="control">
-                <textarea 
-                  v-validate="{required:true}"
-                  v-model="questionData.answers"           
-                  :class="{'textarea': true, 'is-danger':errors.has('answers')}" 
-                  type="textarea" 
-                  name='answers'
-                  placeholder="Enter answers separated by a new line">
-                </textarea>
+              <div class="field">
+                <label class="label">Question Media</label>
+                <p class="help"> add media to question </p>
+                <div class="control">
+                  <div :class="{'file':true, 'has-name':true}">
+                    <label class="file-label">
+                      <input 
+                        @change="addMedia"
+                        v-validate="{image: true, size: 500}"
+                        class="file-input" 
+                        type="file" 
+                        name="file">
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fa fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                          Choose a file…
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                  <p class="help is-danger" v-show="errors.has('file')">{{ errors.first('file') }} </p>
+                  <p v-if="questionData.media"> {{ questionData.media.name }} </p>
+                  <p v-if="questionData.media"> {{ questionData.media.type }} </p>
+                </div>
+              </div>
+
+
+              <div class="field">
+                <label class="label">Answers</label>  
+                <p v-if="questionData.type == 'Multiple Choice'" class="help">Put each answer on a new line. Correct answer at the top.</p>
+                <p v-if="questionData.type == 'Typed Answer'" class="help">Enter each answer you want to accept as correct on a new line.</p>             
+                <div class="control">
+                  <textarea 
+                    v-validate="{required:true}"
+                    v-model="questionData.answers"           
+                    :class="{'textarea': true, 'is-danger':errors.has('answers')}" 
+                    type="textarea" 
+                    name='answers'
+                    placeholder="Enter answers separated by a new line">
+                  </textarea>
+                </div> 
+                <p v-show="errors.has('answers')" class="help is-danger">You need to put some answers!</p>            
               </div> 
-              <p v-show="errors.has('answers')" class="help is-danger">You need to put some possible answers!</p>            
-            </div>                      
-          </form>
-        </section>
+            </div>                     
+            </form>
+          </section>
 
-        <footer class="modal-card-foot">
-          <button v-if="!isEditing" @click="validateBeforeSubmit(addQuestion)" id="create-button" class="button is-success">Add Question</button>
-          <button v-if="isEditing" @click="validateBeforeSubmit(editQuestion)" id="edit-button" class="button is-success">Edit Question</button>
-          <button @click="closeModal" id="close-button" class="button">Cancel</button>
-        </footer>
+          <footer class="modal-card-foot">
+            <button v-if="!isEditing" @click="validateBeforeSubmit(addQuestion)" id="create-button" class="button is-success">Add Question</button>
+            <button v-if="isEditing" @click="validateBeforeSubmit(editQuestion)" id="edit-button" class="button is-success">Edit Question</button>
+            <button @click="closeModal" id="close-button" class="button">Cancel</button>
+          </footer>
+        
       </div>
     </div>
    
@@ -91,7 +107,8 @@ export default {
       questionData: {
         question: '',
         answers: '',
-        media: ''
+        media: '',
+        type: ''
       },
       isEditing: false
     }
@@ -102,7 +119,8 @@ export default {
       this.questionData = {
         question: this.editData.question,
         answers: this.editData.answers,
-        media: this.editData.media
+        media: this.editData.media,
+        type: this.editData.type
       }
       this.isEditing = true
     }
@@ -112,7 +130,8 @@ export default {
       this.questionData = {
         question: this.editData.question,
         answers: this.editData.answers,
-        media: this.editData.media
+        media: this.editData.media,
+        type: this.editData.type
       }
       this.isEditing = true
     }
