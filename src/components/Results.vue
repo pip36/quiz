@@ -2,7 +2,7 @@
 
   <div class="container has-text-centered">
     <h1 class="title"> Done! </h1>
-    <p> You got {{correctAnswers}}/{{questions.length}} correct </p>
+    <p> You got {{numberCorrect}}/{{totalPossible}} correct </p>
     <h2 class="subtitle"> That's {{scorePercentage}}% </h2>
     <h3 class="subtitle" v-if="scorePercentage == 100"> WOW Good job! </h3>
     <h3 class="subtitle" v-else-if="scorePercentage >= 80"> Well done! </h3>
@@ -20,10 +20,10 @@
 
 export default {
   name: 'Quiz',
-  props: ['questions', 'correctAnswers'],
+  props: ['questions', 'numberCorrect', 'totalPossible'],
   computed: {
     scorePercentage: function(){
-      return Math.round((this.correctAnswers/this.questions.length)*100)
+      return Math.round((this.numberCorrect/this.totalPossible)*100)
     }
   }
 }

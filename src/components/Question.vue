@@ -27,12 +27,23 @@
 
       <div v-if="question.type == 'Typed Answer'"> 
         <input v-if="!answered" class="input" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
-        <button v-if="!answered" @click="$emit('answer', false)  " class="button is-primary"> I don't know </button>
+        <button v-if="!answered" @click="$emit('answer', false)" class="button is-primary"> I don't know </button>
           <div v-if="correct && answered" class="notification is-success"> 
             <div class="content">
               <p> Correct! </p>
             </div>
           </div>
+      </div>
+
+      <div v-if="question.type == 'Typed List'"> 
+        <ul>
+          <li class="tag is-medium answer-slot" v-for="(answer, index) in question.possibleAnswers">
+            <p v-if="listAnswers.indexOf(answer) > -1"> {{answer}} </p> 
+            <p v-else> ? </p>       
+          </li>
+        </ul>
+        <input v-if="!answered" class="input" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
+        <button v-if="!answered" @click="$emit('answer', false)" class="button is-primary"> Give Up </button>
       </div>
     </ul>
 
@@ -50,7 +61,8 @@ export default {
   data () {
     return {
       selectedAnswer: null,
-      imageUrl: null
+      imageUrl: null,
+      listAnswers: []
     }
   },
   mounted () {
@@ -65,7 +77,7 @@ export default {
       }
     },
     selectedAnswer: function() {
-      if(this.question.type =='Typed Answer'){
+      if(this.question.type =='Typed Answer' || this.question.type =='Typed List'){
         this.typedCorrectMatch()
       }
     }
@@ -82,6 +94,10 @@ export default {
           [array[i], array[j]] = [array[j], array[i]];
       }
       return array
+    },
+
+    strip(str) {
+      return str.replace(/\s/g, "").toLowerCase()
     },
 
     checkAnswer(index) {
@@ -101,7 +117,19 @@ export default {
         var answer = correctAnswers[i].replace(/\s/g, "").toLowerCase()
         var typed = this.selectedAnswer.replace(/\s/g, "").toLowerCase()
         if(answer === typed){
-          this.$emit('answer', true)
+          if(this.question.type == 'Typed Answer'){
+            this.$emit('answer', true)
+            return
+          }else if(this.question.type == 'Typed List'){
+            this.listAnswers.push(answer)
+            this.selectedAnswer = ''
+            if(this.listAnswers.length === this.question.possibleAnswers.length){
+              this.$emit('answer', true)
+              return
+            }
+             this.$emit('score')
+          }
+          
         }
       }
       return false
@@ -125,5 +153,11 @@ export default {
   .center{
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .answer-slot{
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
   }
 </style>

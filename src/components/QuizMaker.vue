@@ -221,6 +221,15 @@ export default {
             type: data.type
           }
           break
+        case 'Typed List':
+          var newQuestion = {
+            title: data.question,
+            possibleAnswers: data.answers.split('\n').filter((a) => a.length > 0),
+            correctAnswer: null,
+            media: filename,
+            type: data.type
+          }
+          break
       }
 
       this.quiz.questions.push(newQuestion)

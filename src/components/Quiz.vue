@@ -5,14 +5,15 @@
       <div class="container"> 
         <template v-if="quiz.title !== undefined && !finished">         
           <h1 class="title"> {{quiz.title}} </h1>
-          <p> {{correctAnswers}}/{{quiz.questions.length}} correct </p>
+          <p> {{correctAnswers}}/{{maximumScore}} correct </p>
 
           <question 
             :question="quiz.questions[currentQuestion]"
             :owner="quiz.owner"
             :correct="correct"
             :answered="answered"
-            @answer="setCorrect($event)"> 
+            @answer="setCorrect($event)"
+            @score="incrementScore()"> 
           </question>
 
           
@@ -32,7 +33,7 @@
           </div>
         </template>
 
-        <results v-if="finished" :correctAnswers="correctAnswers" :questions="quiz.questions" @reset="resetQuiz()"> </results>
+        <results v-if="finished" :correctAnswers="correctAnswers" :numberCorrect="correctAnswers" :totalPossible="maximumScore" @reset="resetQuiz()"> </results>
   
       </div>
     </section>
@@ -58,6 +59,20 @@ export default {
       correct: null,
       correctAnswers: 0,
       finished: false
+    }
+  },
+  computed: {
+    maximumScore: function() {
+      var questionArr = this.quiz.questions
+      var total = 0
+      for(var i = 0; i < questionArr.length; i++){
+        if(questionArr[i].type == 'Typed List'){
+          total += questionArr[i].possibleAnswers.length
+        }else{
+          total++
+        }
+      }
+      return total
     }
   },
   created() {
@@ -95,6 +110,15 @@ export default {
       this.answered = true
       this.correct = bool
       if(bool == true){ this.correctAnswers++ }
+    },
+
+    incrementScore() {
+      this.correctAnswers++
+    },
+
+    completeList() {
+      this.answered = true
+      this.correct = true
     },
 
     loadNextQuestion() {

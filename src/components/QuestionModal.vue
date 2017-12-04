@@ -17,6 +17,7 @@
                   <select v-model="questionData.type" name="type">
                     <option>Multiple Choice</option>
                     <option>Typed Answer</option>
+                    <option>Typed List</option>
                   </select>
                 </div>
               </div>
@@ -68,8 +69,12 @@
 
               <div class="field">
                 <label class="label">Answers</label>  
-                <p v-if="questionData.type == 'Multiple Choice'" class="help">Put each answer on a new line. Correct answer at the top.</p>
-                <p v-if="questionData.type == 'Typed Answer'" class="help">Enter each answer you want to accept as correct on a new line.</p>             
+                <p v-if="questionData.type == 'Multiple Choice'" class="help">
+                  Put each answer on a new line. Correct answer at the top.
+                </p>
+                <p v-if="questionData.type == 'Typed Answer' || questionData.type == 'Typed List'" class="help">
+                  Enter each answer you want to accept as correct on a new line.
+                </p>             
                 <div class="control">
                   <textarea 
                     v-validate="{required:true}"
