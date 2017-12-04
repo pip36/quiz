@@ -12,6 +12,17 @@
               name="user"
               :value="currentUser">
 
+            <div id="category-field" class="field">
+              <label class="label">Quiz Type</label>
+              <div class="control">
+                <div class="select">
+                  <select v-model="quiz.type" name="category">
+                    <option>Multiple Choice</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div id="title-field" class="field">
               <label class="label">Quiz Title</label>
               <div class="control">
@@ -178,7 +189,8 @@ export default {
         description: '',
         category: '',
         questions: [],
-        image: undefined
+        image: undefined,
+        type: 'Multiple Choice'
       },
       questionEditData: undefined,    
       questionFiles: [],
@@ -299,7 +311,8 @@ export default {
           title: this.quiz.title,
           description: this.quiz.description,
           category: this.quiz.category,
-          questions: this.quiz.questions
+          questions: this.quiz.questions,
+          type: this.quiz.type
         })
         .then(() => {
           this.$store.commit('addNotification', {type:'success', message:'Quiz created successfully'})

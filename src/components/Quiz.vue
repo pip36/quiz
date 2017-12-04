@@ -3,8 +3,7 @@
   <div class="quiz">
     <section class="section">
       <div class="container"> 
-        <template v-if="quiz.title !== undefined && !finished">
-          
+        <template v-if="quiz.title !== undefined && !finished">         
           <h1 class="title"> {{quiz.title}} </h1>
           <p> {{correctAnswers}}/{{quiz.questions.length}} correct </p>
 
