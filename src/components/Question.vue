@@ -101,7 +101,6 @@ export default {
     },
 
     listAnswerFound(str) {
-      console.log(this.listAnswers.indexOf(str) > -1)
       return this.listAnswers.indexOf(str.replace(/\s/g, "").toLowerCase()) > -1
     },
 
@@ -118,7 +117,6 @@ export default {
 
     typedCorrectMatch () {
       var correctAnswers = this.question.possibleAnswers
-      console.log(correctAnswers)
       for(var i = 0; i < correctAnswers.length; i++){
         var answer = correctAnswers[i].replace(/\s/g, "").toLowerCase()
         var typed = this.selectedAnswer.replace(/\s/g, "").toLowerCase()

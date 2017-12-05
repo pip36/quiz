@@ -155,6 +155,7 @@ export default {
     },
 
     closeModal () {
+      this.isEditing = false
       this.$emit('close')
     },
 
