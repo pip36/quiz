@@ -6,7 +6,7 @@
       <h2 class="subtitle"> {{question.title }} </h2> 
       <img v-if="imageUrl" :src="imageUrl" class="image is-128x128 center">  
 
-      <div v-if="question.type == 'Multiple Choice'"> 
+      <div v-if="question.type == 'Multiple Choice' || question.type == undefined"> 
         <li v-for="(answer, index) in shuffledAnswers" :key="index">
           <div :class="{'notification': true, 
                         'is-success': answer===selectedAnswer && correct && answered,
@@ -37,8 +37,8 @@
 
       <div v-if="question.type == 'Typed List'"> 
         <ul>
-          <li class="tag is-medium answer-slot" v-for="(answer, index) in question.possibleAnswers">
-            <p v-if="listAnswers.indexOf(answer) > -1"> {{answer}} </p> 
+          <li class="tag is-medium answer-slot" :class="{'is-success': listAnswerFound(answer)}" v-for="(answer, index) in question.possibleAnswers">
+            <p v-if="listAnswerFound(answer)"> {{answer}} </p> 
             <p v-else> ? </p>       
           </li>
         </ul>
@@ -100,6 +100,11 @@ export default {
       return str.replace(/\s/g, "").toLowerCase()
     },
 
+    listAnswerFound(str) {
+      console.log(this.listAnswers.indexOf(str) > -1)
+      return this.listAnswers.indexOf(str.replace(/\s/g, "").toLowerCase()) > -1
+    },
+
     checkAnswer(index) {
       var correctAnswer = this.question.correctAnswer
       var clickedAnswer = this.question.possibleAnswers[index]
@@ -113,6 +118,7 @@ export default {
 
     typedCorrectMatch () {
       var correctAnswers = this.question.possibleAnswers
+      console.log(correctAnswers)
       for(var i = 0; i < correctAnswers.length; i++){
         var answer = correctAnswers[i].replace(/\s/g, "").toLowerCase()
         var typed = this.selectedAnswer.replace(/\s/g, "").toLowerCase()
@@ -120,7 +126,8 @@ export default {
           if(this.question.type == 'Typed Answer'){
             this.$emit('answer', true)
             return
-          }else if(this.question.type == 'Typed List'){
+          }else if(this.question.type == 'Typed List' && 
+                   this.listAnswers.indexOf(answer) === -1){
             this.listAnswers.push(answer)
             this.selectedAnswer = ''
             if(this.listAnswers.length === this.question.possibleAnswers.length){
