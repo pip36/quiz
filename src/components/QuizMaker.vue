@@ -164,7 +164,7 @@ import QuestionCard from '@/components/QuestionCard'
 import Storage from '@/helpers/firestoreHelper'
 
 export default {
-  name: 'Home',
+  name: 'QuizMaker',
   components: {
     'question-modal': QuestionModal,
     'media-card': MediaCard,
@@ -196,6 +196,16 @@ export default {
       this.loadQuizToForm(this.$route.params.quiz)
     }
   },
+  
+  beforeRouteLeave (to, from, next) {
+    const answer = confirm('Do you really want to leave? you will lose your changes!')
+    if (answer) {
+      next()
+    } else {
+      next(false)
+    }
+  },
+
   methods: {
 
     addQuestion (data) {
