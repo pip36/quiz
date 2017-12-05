@@ -6,7 +6,7 @@
       <h2 class="subtitle"> {{question.title }} </h2> 
       <img v-if="imageUrl" :src="imageUrl" class="image is-128x128 center">  
 
-      <div v-if="question.type == 'Multiple Choice' || question.type == undefined"> 
+      <div class="space-top" v-if="question.type == 'Multiple Choice' || question.type == undefined"> 
         <li v-for="(answer, index) in shuffledAnswers" :key="index">
           <div :class="{'notification': true, 
                         'is-success': answer===selectedAnswer && correct && answered,
@@ -17,7 +17,7 @@
               :disabled="answered"> 
               {{answer}} 
             </button>
-            <div v-if="answered && answer===selectedAnswer" class="content">
+            <div v-if="answered && answer===selectedAnswer" class="content space-top">
               <p v-if="correct"> Correct! </p>
               <p v-else> Wrong! </p>
             </div>
@@ -26,9 +26,9 @@
       </div>
 
       <div v-if="question.type == 'Typed Answer'"> 
-        <input v-if="!answered" class="input" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
-        <button v-if="!answered" @click="$emit('answer', false)" class="button is-primary"> I don't know </button>
-          <div v-if="correct && answered" class="notification is-success"> 
+        <input v-if="!answered" class="input space-top" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
+        <button v-if="!answered" @click="$emit('answer', false)" class="button is-primary space-top"> I don't know </button>
+          <div v-if="correct && answered" class="notification is-success space-top"> 
             <div class="content">
               <p> Correct! </p>
             </div>
@@ -42,8 +42,8 @@
             <p v-else> ? </p>       
           </li>
         </ul>
-        <input v-if="!answered" class="input" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
-        <button v-if="!answered" @click="$emit('answer', false)" class="button is-primary"> Give Up </button>
+        <input v-if="!answered" class="input space-top" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
+        <button v-if="!answered" @click="$emit('answer', false)" class="button is-primary space-top"> Give Up </button>
       </div>
     </ul>
 
@@ -166,5 +166,9 @@ export default {
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 5px;
+  }
+
+  .space-top{
+    margin-top: 20px;
   }
 </style>
