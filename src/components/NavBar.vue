@@ -6,14 +6,14 @@
         <strong>QuizHome</strong>
       </router-link>
 
-      <button class="button navbar-burger">
+      <button class="button navbar-burger" :class="{'is-active': burgerOpen}" @click="toggleBurger()">
         <span></span>
         <span></span>
         <span></span>
       </button>
     </div>
 
-    <div class="navbar-menu">
+    <div class="navbar-menu" :class="{'is-active': burgerOpen}">
       <div class="navbar-end">
         <router-link ref="signUpButton" v-if="!loggedIn" class="navbar-item" to="/signup">
           <strong>Create Account</strong>
@@ -41,9 +41,18 @@
 export default {
   name: 'Navbar',
   props: ['loggedIn'],
+  data () {
+    return {
+      burgerOpen: false
+    }
+  },
   methods: {
     signOut() {
       this.$emit('logout')
+    },
+    toggleBurger() {
+      if(this.burgerOpen){ this.burgerOpen = false }
+      else{ this.burgerOpen = true }
     }
   }
 }
