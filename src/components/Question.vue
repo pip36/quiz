@@ -25,7 +25,7 @@
         </li> 
       </div>
 
-      <div v-if="question.type == 'Typed Answer'"> 
+      <div v-if="question.type == 'Typed Answer'" class="space-top"> 
         <input v-if="!answered" class="input space-top" type="text" placeholder="Enter you answer..." v-model="selectedAnswer">
         <button v-if="!answered" @click="$emit('answer', false)" class="button is-primary space-top"> I don't know </button>
           <div v-if="correct && answered" class="notification is-success space-top"> 
@@ -35,7 +35,7 @@
           </div>
       </div>
 
-      <div v-if="question.type == 'Typed List'"> 
+      <div v-if="question.type == 'Typed List'" class="space-top"> 
         <ul>
           <li class="tag is-medium answer-slot" :class="{'is-success': listAnswerFound(answer)}" v-for="(answer, index) in question.possibleAnswers">
             <p v-if="listAnswerFound(answer)"> {{answer}} </p> 
