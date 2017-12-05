@@ -74,6 +74,8 @@ export default {
     question: function() {
       if(this.question.media !== undefined && this.question.media != false){
         this.loadImage(this.owner + '/media/' + this.question.media)
+      }else {
+        this.imageUrl = null
       }
     },
     selectedAnswer: function() {

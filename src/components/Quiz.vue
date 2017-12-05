@@ -8,6 +8,7 @@
           <p> {{correctAnswers}}/{{maximumScore}} correct </p>
 
           <question 
+            ref="question"
             :question="quiz.questions[currentQuestion]"
             :owner="quiz.owner"
             :correct="correct"
