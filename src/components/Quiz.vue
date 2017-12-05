@@ -127,6 +127,7 @@ export default {
         this.correct = null
         this.answered = false   
         this.currentQuestion++
+        this.$refs.question.selectedAnswer = ''
       }
     },
 
