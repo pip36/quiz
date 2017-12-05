@@ -188,7 +188,8 @@ export default {
       thumbnailImage: '/static/question.png',
       file: {},
       isUpdating: false,
-      editIndex: null
+      editIndex: null,
+      submitted: false
     }  
   },
   mounted() {
@@ -198,12 +199,14 @@ export default {
   },
   
   beforeRouteLeave (to, from, next) {
-    const answer = confirm('Do you really want to leave? you will lose your changes!')
-    if (answer) {
-      next()
-    } else {
-      next(false)
-    }
+    if(!this.submitted){
+      const answer = confirm('Do you really want to leave? you will lose your changes!')
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    }   
   },
 
   methods: {
@@ -303,6 +306,7 @@ export default {
               Storage.upload(this.questionFiles[i], this.currentUser + '/media/')
             }
           }
+          this.submitted = true
           this.$router.push('/profile')
       })
       .catch((error) => {
@@ -346,6 +350,7 @@ export default {
               Storage.upload(this.questionFiles[i], this.currentUser + '/media/')
             }
           }
+          this.submitted = true
           this.$router.push('/profile')
           
         })
