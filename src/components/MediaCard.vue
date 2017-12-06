@@ -40,6 +40,8 @@
             <div v-if="quiz.data.playedCount" class="quiz-data">
               <p v-if="quiz.data.playedCount > 1" class="help"> played {{quiz.data.playedCount}} times!</p>
               <p v-else class="help"> played {{quiz.data.playedCount}} time!</p>
+
+              <p v-if="quiz.data.totalScore"> average score: {{averageScore}} </p>
             </div>
 
           </div>
@@ -68,6 +70,9 @@ export default {
   computed: {
     currentUser: function() {
       return Auth.currentUser()
+    },
+    averageScore: function() {
+      return (this.quiz.data.totalScore/this.quiz.data.playedCount).toFixed(2)
     }
   },
   mounted () {
