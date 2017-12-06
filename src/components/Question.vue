@@ -72,6 +72,8 @@ export default {
   },
   watch: {
     question: function() {
+      // reset list
+      this.listAnswers = []
       if(this.question.media !== undefined && this.question.media != false){
         this.loadImage(this.owner + '/media/' + this.question.media)
       }else {
