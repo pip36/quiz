@@ -133,6 +133,25 @@ export default {
 
     showResults() {
       this.finished = true
+      //update the playedCount
+      var quizRef = this.$store.state.db.collection("quizzes").doc(this.$store.state.activeQuiz);
+
+      this.$store.state.db.runTransaction((transaction) => {
+        return transaction.get(quizRef).then((quiz) => {
+          if(quiz.data().playedCount !== undefined){
+            var newCount = quiz.data().playedCount + 1
+            transaction.update(quizRef, { playedCount: newCount })
+            return newCount
+          } else {
+            transaction.update(quizRef, { playedCount: 1 })
+            return 1
+          }
+        })
+        }).then((count) => {
+          console.log("Play count increased to ", count)
+        }).catch(function(err) {
+          console.error(err);
+        })
     }
   }
 }

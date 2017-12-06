@@ -37,6 +37,11 @@
                   Delete 
               </a>
             </div> 
+            <div v-if="quiz.data.playedCount" class="quiz-data">
+              <p v-if="quiz.data.playedCount > 1" class="help"> played {{quiz.data.playedCount}} times!</p>
+              <p v-else class="help"> played {{quiz.data.playedCount}} time!</p>
+            </div>
+
           </div>
 
                  
@@ -85,6 +90,9 @@ export default {
 
 <style scoped>
   .controls{
+    text-align: right;
+  }
+  .quiz-data{
     text-align: right;
   }
 </style>
