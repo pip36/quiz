@@ -41,7 +41,7 @@
               <p v-if="quiz.data.playedCount > 1" class="help"> played {{quiz.data.playedCount}} times!</p>
               <p v-else class="help"> played {{quiz.data.playedCount}} time!</p>
 
-              <p v-if="quiz.data.totalScore"> average score: {{averageScore}} </p>
+              <p v-if="quiz.data.totalScore"> average score: {{averageScore}}% </p>
             </div>
 
           </div>
@@ -71,8 +71,20 @@ export default {
     currentUser: function() {
       return Auth.currentUser()
     },
+    maximumScore: function() {
+      var questionArr = this.quiz.data.questions
+      var total = 0
+      for(var i = 0; i < questionArr.length; i++){
+        if(questionArr[i].type == 'Typed List'){
+          total += questionArr[i].possibleAnswers.length
+        }else{
+          total++
+        }
+      }
+      return total
+    },
     averageScore: function() {
-      return (this.quiz.data.totalScore/this.quiz.data.playedCount).toFixed(2)
+      return ((this.quiz.data.totalScore/this.quiz.data.playedCount)/this.maximumScore).toFixed(2) * 100
     }
   },
   mounted () {
