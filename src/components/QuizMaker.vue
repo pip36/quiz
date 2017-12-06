@@ -120,22 +120,19 @@
               v-show="isUpdating" 
               @click="validateBeforeSubmit(updateQuiz)" 
               class="button is-primary is-medium"> Update Quiz! </button>
+
+            <question-modal
+              ref="questionModal" 
+              @createQuestion="addQuestion($event)"
+              @editQuestion="editQuestion($event)" 
+              @close="questionCreatorActive = false" 
+              :active="questionCreatorActive"
+              :editData="questionEditData"> 
+            </question-modal>
           </aside>
 
-          <question-modal
-            ref="questionModal" 
-            @createQuestion="addQuestion($event)"
-            @editQuestion="editQuestion($event)" 
-            @close="questionCreatorActive = false" 
-            :active="questionCreatorActive"
-            :editData="questionEditData"> 
-          </question-modal>
-
          <main id="viewport" class="column is-9 has-text-centered"> 
-           <media-card :quiz="{data:quiz}" :altSrc="thumbnailImage">
-             
-           </media-card>
-           
+           <media-card :quiz="{data:quiz}" :altSrc="thumbnailImage"> </media-card>          
            <ul>
               <li v-for="(question, index) in quiz.questions">
                 <question-card @swap="swapCard(index,index-1)" @delete="removeQuestion(index)" @edit="openEditor(index)"> 
@@ -405,11 +402,7 @@ export default {
 
 <style scoped>
   aside{
-    background-color: #f8f8f8;
-    height: 90vh;
-  }
-  main{
-    height: 90vh;
+    background-color: #f8f8f8; 
   }
   .textarea{
     white-space: pre-wrap;
