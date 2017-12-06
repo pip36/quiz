@@ -5,20 +5,29 @@ export default {
   login (email, password, callback) {
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(() => {
+        store.commit('addNotification', { type: 'success', message: 'Login Success!' })
         callback()
       })
       .catch((error) => {
-        var errorMessage = error.message
-        console.log(errorMessage)
+        store.commit('addNotification', { type: 'danger', message: 'Login Failed!' + error.message })
       })
   },
+
   logout () {
     firebase.auth().signOut()
+      .then(() => {
+        store.commit('addNotification', { type: 'success', message: 'Logged out successfully' })
+      })
+      .catch((error) => {
+        store.commit('addNotification', { type: 'danger', message: 'Logout failed!' + error.message })
+      })
   },
+
   currentUser () {
     var user = store.state.currentUser
     return (user && user.uid) ? user.uid : null
   },
+
   isLoggedIn () {
     var user = store.state.currentUser
     if (user && user.uid) {
@@ -27,16 +36,15 @@ export default {
       return false
     }
   },
+
   createAccount (email, password, callback) {
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(() => {
+        store.commit('addNotification', { type: 'success', message: 'Account created Successfully' })
         callback()
       })
-      .catch(function (error) {
-        // Handle Errors here.
-        // var errorCode = error.code
-        var errorMessage = error.message
-        console.log(errorMessage)
+      .catch((error) => {
+        store.commit('addNotification', { type: 'danger', message: 'Account Creation failed!' + error.message })
       })
   }
 }
