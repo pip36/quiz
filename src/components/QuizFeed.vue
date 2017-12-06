@@ -37,7 +37,6 @@ export default {
   },
 
   watch: {
-    // whenever question changes, this function will run
     category: function () {
       this.quizzes = []
       this.getQuizzes()

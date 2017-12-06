@@ -19,25 +19,27 @@
             <p id="description" class="subtitle is-6">
               {{quiz.data.description}}
             </p>
+
+            <div v-if="quiz && quiz.data.owner === currentUser" class="controls">
+              <router-link
+                id="edit-button"
+                class="button is-small"
+                
+                :to="{name: 'QuizMaker', params: { quiz: quiz }}">
+                edit
+              </router-link>
+          
+              <a 
+                class="button is-small" 
+                id="delete-button"
+                ref="deleteButton"
+                @click="remove">
+                  Delete 
+              </a>
+            </div> 
           </div>
 
-          <div v-if="quiz && quiz.data.owner === currentUser" class="media-right">
-            <router-link
-              id="edit-button"
-              class="button is-small"
-              
-              :to="{name: 'QuizMaker', params: { quiz: quiz }}">
-              edit
-            </router-link>
-            </br>
-            <a 
-              class="button is-small" 
-              id="delete-button"
-              ref="deleteButton"
-              @click="remove">
-                Delete 
-            </a>
-          </div>        
+                 
         </div>
       </div>
     </div>
@@ -82,5 +84,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .controls{
+    text-align: right;
+  }
 </style>
