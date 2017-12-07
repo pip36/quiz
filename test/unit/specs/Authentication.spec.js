@@ -48,7 +48,11 @@ describe('Auth functions', () => {
     })
     it('should call firebases signOut function', () => {
       let logoutStub= sinon.stub(firebase.auth(), 'signOut')
-      logoutStub.callsFake(() => {})
+      logoutStub.callsFake(() => {
+        return new Promise((resolve, reject) => {
+          resolve('success')
+        })
+      })
       Auth.logout()
       expect(logoutStub.called).to.be.true
     })

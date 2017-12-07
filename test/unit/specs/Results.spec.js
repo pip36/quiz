@@ -8,7 +8,8 @@ describe('Quiz Results', () => {
   let wrapper = mount(Results, {
     propsData: {
       questions: questions,
-      correctAnswers: 10
+      numberCorrect: 10,
+      totalPossible: 10
     }
   })
 
@@ -16,10 +17,10 @@ describe('Quiz Results', () => {
     it('should display the correct score percentage', () => {
       expect(wrapper.vm.scorePercentage).to.equal(100)
 
-      wrapper.vm.correctAnswers = 5
+      wrapper.vm.numberCorrect = 5
       expect(wrapper.vm.scorePercentage).to.equal(50)
 
-      wrapper.vm.correctAnswers = 0
+      wrapper.vm.numberCorrect = 0
       expect(wrapper.vm.scorePercentage).to.equal(0)
     })
   })

@@ -41,7 +41,7 @@
               <p v-if="quiz.data.playedCount > 1" class="help"> played {{quiz.data.playedCount}} times!</p>
               <p v-else class="help"> played {{quiz.data.playedCount}} time!</p>
 
-              <p v-if="quiz.data.totalScore"> average score: {{averageScore}}% </p>
+              <p v-if="quiz.data.totalScore" class="help"> average score: {{averageScore}}% </p>
             </div>
 
           </div>

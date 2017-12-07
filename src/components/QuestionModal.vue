@@ -14,11 +14,15 @@
               <label class="label">Question Type</label>
               <div class="control">
                 <div class="select">
-                  <select v-model="questionData.type" name="type">
+                  <select 
+                    v-validate="{required:true}"
+                    v-model="questionData.type" 
+                    name="type">
                     <option>Multiple Choice</option>
                     <option>Typed Answer</option>
                     <option>Typed List</option>
                   </select>
+                  <p class="help is-danger" v-show="errors.has('type')">{{ errors.first('type') }} </p> 
                 </div>
               </div>
             </div>
@@ -121,24 +125,40 @@ export default {
   props: ['active', 'editData'],
   mounted() {
     if(this.editData !== undefined){
+      var type = 'Multiple Choice'
+      if(this.editData.type !== undefined){type = this.editData.type}
       this.questionData = {
         question: this.editData.question,
         answers: this.editData.answers,
         media: this.editData.media,
-        type: this.editData.type
+        type: type
       }
       this.isEditing = true
     }
   },
   watch: {
     editData: function () {
-      this.questionData = {
-        question: this.editData.question,
-        answers: this.editData.answers,
-        media: this.editData.media,
-        type: this.editData.type
+      if(this.editData !== undefined){
+        var type = 'Multiple Choice'
+        if(this.editData.type !== undefined){type = this.editData.type}
+        this.questionData = {
+          question: this.editData.question,
+          answers: this.editData.answers,
+          media: this.editData.media,
+          type: type
+        }
+        this.isEditing = true
       }
-      this.isEditing = true
+      else {
+        this.questionData = {
+          question: '',
+          answers: '',
+          media: '',
+          type: ''
+        }
+        this.isEditing = false
+      }
+     
     }
   },
   methods: {

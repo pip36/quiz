@@ -24,7 +24,8 @@ describe('Question Modal Edit', () => {
       editData: {
         question: 'a test?',
         answers: 'true\nfalse',
-        media: 'test.jpg'
+        media: 'test.jpg',
+        type: 'Multiple Choice'
       }
     },
     mocks: {
@@ -34,9 +35,6 @@ describe('Question Modal Edit', () => {
   
   beforeEach( () => {
     errors = new VeeValidate.ErrorBag()
-  })
-  afterEach(() => {
- 
   })
 
   describe('on load with editData prop', () => {
@@ -73,17 +71,6 @@ describe('Question Modal Edit', () => {
       var button = wrapper.find('#close-icon')
       button.trigger('click')
       expect(wrapper.emitted('close').length).to.equal(2)
-    })
-  })
-
-  describe('Edit Button', () => {
-    it('should exist', () => {
-      expect(wrapper.contains('#edit-button')).to.be.true
-    })
-    it('should emit close event on click', () => {
-      var button = wrapper.find('#edit-button')
-      button.trigger('click')
-      expect(wrapper.emitted('editQuestion').length).to.equal(1)
     })
   })
 

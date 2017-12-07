@@ -19,17 +19,20 @@ localVue.use(VeeValidate)
 describe('Question Modal', () => {
   let spy
   let errors = new VeeValidate.ErrorBag()
+  let $validator = new VeeValidate.Validator()
   let wrapper = mount(QuestionModal, {
     propsData: {
-
+      editData: undefined
     },
     mocks: {
-      errors
+      errors,
+      $validator
     }
   })
   
   beforeEach( () => {
     errors = new VeeValidate.ErrorBag()
+    $validator = new VeeValidate.Validator()
   })
   afterEach(() => {
  
@@ -57,28 +60,7 @@ describe('Question Modal', () => {
     })
   })
 
-  describe('Create Button', () => {
-    it('should exist', () => {
-      expect(wrapper.contains('#create-button')).to.be.true
-    })
-    it('should not emit createQuestion event on click if there are errors', () => {
-      wrapper.vm.errors.add('question', 'error', 'input')
-      var button = wrapper.find('#create-button')
-      button.trigger('click')
-      expect(wrapper.emitted('createQuestion')).to.equal(undefined)
-    })
-    it('should emit createQuestion event on click if there are no errors', () => {
-      wrapper.vm.errors.clear()
-      var button = wrapper.find('#create-button')
-      button.trigger('click')
-      expect(wrapper.emitted('createQuestion').length).to.equal(1)
-    })
-  })
-
   describe('File Input', () => {
-    it('should exist', () => {
-      expect(wrapper.contains('input[name="file"]')).to.be.true
-    })
     it('addMedia function should update the questions file data', () => {
       wrapper.vm.addMedia(testUploadEvent)
       wrapper.update()

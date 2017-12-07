@@ -101,7 +101,7 @@
                 </li>
               </ul>
               <div class="control">
-                <button @click="questionCreatorActive=true" type="button" class="button is-small is-info"> 
+                <button @click="questionCreatorActive=true; clearEditData()" type="button" class="button is-small is-info"> 
                   Add Question            
                 </button>
               </div>
@@ -210,6 +210,10 @@ export default {
   },
 
   methods: {
+
+    clearEditData () {
+      this.questionEditData = undefined
+    },
 
     addQuestion (data) {
       var filename = data.media
