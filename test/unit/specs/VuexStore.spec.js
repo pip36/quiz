@@ -1,44 +1,42 @@
-/*
-import store from '@/vuex/store'
+import {mutations} from '@/vuex/store'
 
-describe('Store', () => {
-  it('should be an object', () => {
-    expect(typeof store).to.equal('object')
-  })
-  it('should contain a state object', () => {
-    expect(typeof store.state).to.equal('object')
-  })
-})
+describe('Vuex Store', () => {
+  var state = {
+    activeQuiz: null,
+    currentUser: null,
+    notifications: []
+  }
 
-describe('Store state object', () => {
-  it('should contain a firestore database reference', () => {
-    expect(typeof store.state.db).to.equal('object')
-  })
-  it('should contain a firebase storage reference', () => {
-    expect(typeof store.state.storage).to.equal('object')
-  })
-})
-
-describe('Store mutations', () => {
-  describe('setQuiz', () => {
-    it('should set the given quiz', () => {
-      store.commit('setQuiz', 'testQuiz')
-      expect(store.state.activeQuiz).to.equal('testQuiz')
+  describe('mutations', () => {
+    it('setQuiz mutation should set active user', () => {
+      expect(state.activeQuiz).to.equal(null)
+      mutations.setQuiz(state, 'quizId')
+      expect(state.activeQuiz).to.equal('quizId')
+    })
+    it('login mutation should set active user', () => {
+      expect(state.currentUser).to.equal(null)
+      mutations.login(state, 'userId')
+      expect(state.currentUser).to.equal('userId')
+    })
+    it('logout mutation should remove active user', () => {
+      state.currentUser = 'userId'
+      mutations.logout(state)
+      expect(state.currentUser).to.equal(null)
+    })
+    it('add notification mutation should add a notification', () => {
+      state.notifications = []
+      mutations.addNotification(state, {name: 'test'})
+      expect(state.notifications.length).to.equal(1)
+      expect(state.notifications[0]).to.deep.equal({name: 'test'})
+    })
+    it('remove notification mutation should remove a notification', () => {
+      state.notifications = [0,1,2,3]
+      mutations.removeNotification(state, 0)
+      expect(state.notifications.length).to.equal(3)
+      expect(state.notifications[0]).to.equal(1)
+      mutations.removeNotification(state, 2)
+      expect(state.notifications.length).to.equal(2)
+      expect(state.notifications).to.deep.equal([1,2])
     })
   })
-
-  describe('login', () => {
-    it('should set the current user to logged in user', () => {
-      store.commit('login', 'testUser')
-      expect(store.state.currentUser).to.equal('testUser')
-    })
-  })
-
-  describe('logout', () => {
-    it('should set current user to empty object', () => {
-      store.commit('logout')
-      expect(store.state.currentUser).to.deep.equal({})
-    })
-  })
 })
-*/

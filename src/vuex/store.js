@@ -9,6 +9,28 @@ Vue.use(Vuex)
 
 firebase.initializeApp(Config.firebase)
 
+export const mutations = {
+  setQuiz (state, quizId) {
+    state.activeQuiz = quizId
+  },
+
+  login (state, user) {
+    state.currentUser = user
+  },
+
+  logout (state) {
+    state.currentUser = null
+  },
+
+  removeNotification (state, index) {
+    state.notifications.splice(index, 1)
+  },
+
+  addNotification (state, object) {
+    state.notifications.push(object)
+  }
+}
+
 const store = new Vuex.Store({
   plugins: [
     createPersistedState({
@@ -23,28 +45,10 @@ const store = new Vuex.Store({
     currentUser: null,
     notifications: []
   },
-  mutations: {
-    setQuiz (state, quizId) {
-      state.activeQuiz = quizId
-    },
-
-    login (state, user) {
-      state.currentUser = user
-    },
-
-    logout (state) {
-      state.currentUser = null
-    },
-
-    removeNotification (state, index) {
-      state.notifications.splice(index, 1)
-    },
-
-    addNotification (state, object) {
-      state.notifications.push(object)
-    }
-  }
+  mutations
 })
+
+export default store
 
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
@@ -53,5 +57,3 @@ firebase.auth().onAuthStateChanged(function (user) {
     store.commit('logout')
   }
 })
-
-export default store
