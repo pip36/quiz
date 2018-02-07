@@ -31,9 +31,9 @@
           </div>
 
         <div class="content category-division">         
-          <quiz-feed :category="activeCategory"> {{ activeCategory }} </quiz-feed>      
+          <quiz-feed :category="activeCategory"> {{ activeCategory }} </quiz-feed>
         </div>
-      </div>
+      </div>     
     </section>
     
   </div>
