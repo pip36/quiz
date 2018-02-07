@@ -13,9 +13,15 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "bulma": "^0.6.2",
+    "firebase": "^4.9.1",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
     "vee-validate": "^2.0.0-rc.23",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.4.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
