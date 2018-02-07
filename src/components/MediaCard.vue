@@ -84,7 +84,7 @@ export default {
       return total
     },
     averageScore: function() {
-      return ((this.quiz.data.totalScore/this.quiz.data.playedCount)/this.maximumScore).toFixed(2) * 100
+      return Math.floor((((this.quiz.data.totalScore/this.quiz.data.playedCount)/this.maximumScore) * 100))
     }
   },
   mounted () {
