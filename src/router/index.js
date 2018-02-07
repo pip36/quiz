@@ -51,26 +51,12 @@ export default new Router({
     {
       path: '/signup',
       name: 'SignUp',
-      component: SignUp,
-      beforeEnter: (to, from, next) => {
-        if (authenticated()) {
-          next(from)
-        } else {
-          next()
-        }
-      }
+      component: SignUp
     },
     {
       path: '/signin',
       name: 'SignIn',
-      component: SignIn,
-      beforeEnter: (to, from, next) => {
-        if (authenticated()) {
-          next(from)
-        } else {
-          next()
-        }
-      }
+      component: SignIn
     },
     {
       path: '/profile',
